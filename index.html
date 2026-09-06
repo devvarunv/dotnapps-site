@@ -227,6 +227,14 @@
     transition: max-width .3s ease, opacity .18s ease, margin .3s ease;
   }
   .nav-toggle i { width: 4px; height: 4px; border-radius: 50%; background: var(--text); }
+  .js .nav-toggle i { animation: navDots 1.4s ease-in-out infinite both; }
+  .js .nav-toggle i:nth-child(1) { animation-delay: -.32s; }
+  .js .nav-toggle i:nth-child(2) { animation-delay: -.16s; }
+  .js .nav-toggle:hover i { animation-duration: .9s; }
+  @keyframes navDots {
+    0%, 75%, 100% { transform: scale(.5); opacity: .3; }
+    35% { transform: scale(1); opacity: 1; }
+  }
   .nav-toggle:hover { background: var(--sunken); }
 
   /* ---------- Hero / orbit ---------- */
@@ -807,6 +815,7 @@
     .stack-track { transform: none !important; }
     .js .vc-in, .js .vc-out { opacity: 1 !important; transform: none !important; }
     .js .vc-typing { display: none !important; }
+    .js .nav-toggle i { transform: none !important; opacity: 1 !important; }
   }
 </style>
 </head>
