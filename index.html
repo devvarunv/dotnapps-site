@@ -159,17 +159,19 @@
       max-width: 0; opacity: 0; overflow: hidden; pointer-events: none; margin-left: .4rem;
     }
     .nav.scrolled .nav-toggle { display: inline-flex; max-width: 42px; opacity: 1; }
-    .nav.scrolled:hover, .nav.scrolled:focus-within, .nav.scrolled.open {
+    .nav.scrolled:hover, .nav.scrolled:focus-within, .nav.scrolled.open, .nav.scrolled.show-menu {
       width: min(1080px, calc(100vw - 40px));
     }
     .nav.scrolled:hover .nav-links,
     .nav.scrolled:focus-within .nav-links,
-    .nav.scrolled.open .nav-links {
+    .nav.scrolled.open .nav-links,
+    .nav.scrolled.show-menu .nav-links {
       max-width: 780px; opacity: 1; pointer-events: auto;
     }
     .nav.scrolled:hover .nav-toggle,
     .nav.scrolled:focus-within .nav-toggle,
-    .nav.scrolled.open .nav-toggle {
+    .nav.scrolled.open .nav-toggle,
+    .nav.scrolled.show-menu .nav-toggle {
       max-width: 0; opacity: 0; margin: 0; overflow: hidden; pointer-events: none;
     }
   }
@@ -1375,9 +1377,21 @@
       });
     }
 
-    /* nav condense */
+    /* nav condense — collapse on scroll-down, reveal on scroll-up */
     var nav = document.getElementById("nav");
-    var onScrollNav = function () { nav.classList.toggle("scrolled", window.scrollY > 40); };
+    var lastY = window.scrollY;
+    var onScrollNav = function () {
+      var y = window.scrollY;
+      nav.classList.toggle("scrolled", y > 40);
+      if (y <= 40) {
+        nav.classList.remove("show-menu");
+      } else if (y < lastY - 2) {
+        nav.classList.add("show-menu");
+      } else if (y > lastY + 4) {
+        nav.classList.remove("show-menu");
+      }
+      lastY = y;
+    };
     onScrollNav();
     window.addEventListener("scroll", onScrollNav, { passive: true });
 
