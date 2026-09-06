@@ -10,40 +10,40 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
 <style>
   :root {
-    --canvas: #F5F5F5;
+    --canvas: #F5F5F7;
     --frame: #FFFFFF;
-    --sunken: #F8F8F9;
+    --sunken: #F5F5F7;
     --raise: #FFFFFF;
-    --text: #151515;
-    --muted: #6C6C70;
-    --faint: #9A9AA0;
-    --hairline: rgba(0, 0, 0, .075);
-    --border: #E8E8EA;
-    --ring: rgba(0, 0, 0, .07);
-    --focus: #2F5BEA;
-    --glow: rgba(74, 108, 232, .16);
-    --shadow-nav: 0 8px 30px rgba(0, 0, 0, .07), 0 1px 3px rgba(0, 0, 0, .05);
-    --shadow-frame: 0 30px 80px rgba(0, 0, 0, .12), 0 2px 10px rgba(0, 0, 0, .04);
-    --shadow-chip: 0 6px 18px rgba(0, 0, 0, .10), 0 1px 3px rgba(0, 0, 0, .06);
-    --shadow-card: 0 24px 60px rgba(0, 0, 0, .13), 0 2px 8px rgba(0, 0, 0, .05);
+    --text: #1D1D1F;
+    --muted: #6E6E73;
+    --faint: #A1A1A6;
+    --hairline: rgba(0, 0, 0, .055);
+    --border: #D2D2D7;
+    --ring: rgba(0, 0, 0, .045);
+    --focus: #0071E3;
+    --glow: rgba(0, 113, 227, .08);
+    --shadow-nav: 0 4px 20px rgba(0, 0, 0, .05), 0 1px 3px rgba(0, 0, 0, .04);
+    --shadow-frame: 0 16px 44px rgba(0, 0, 0, .08);
+    --shadow-chip: 0 3px 12px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .04);
+    --shadow-card: 0 12px 40px rgba(0, 0, 0, .07), 0 2px 8px rgba(0, 0, 0, .04);
   }
   :root:not([data-theme="light"]) {
     @media (prefers-color-scheme: dark) {
-      --canvas: #090909; --frame: #131314; --sunken: #191919; --raise: #1E1E20;
-      --text: #EDEDED; --muted: #9C9CA1; --faint: #64646A;
-      --hairline: rgba(255, 255, 255, .10); --border: #2A2A2C; --ring: rgba(255, 255, 255, .08);
-      --focus: #6C97F2; --glow: rgba(108, 151, 242, .18);
-      --shadow-nav: 0 8px 30px rgba(0, 0, 0, .45); --shadow-frame: none;
-      --shadow-chip: 0 6px 18px rgba(0, 0, 0, .5); --shadow-card: 0 24px 60px rgba(0, 0, 0, .55);
+      --canvas: #000000; --frame: #000000; --sunken: #1D1D1F; --raise: #1D1D1F;
+      --text: #F5F5F7; --muted: #86868B; --faint: #6E6E73;
+      --hairline: rgba(255, 255, 255, .08); --border: #424245; --ring: rgba(255, 255, 255, .06);
+      --focus: #2997FF; --glow: rgba(41, 151, 255, .12);
+      --shadow-nav: 0 4px 20px rgba(0, 0, 0, .5); --shadow-frame: none;
+      --shadow-chip: 0 4px 14px rgba(0, 0, 0, .45); --shadow-card: 0 16px 44px rgba(0, 0, 0, .55);
     }
   }
   :root[data-theme="dark"] {
-    --canvas: #090909; --frame: #131314; --sunken: #191919; --raise: #1E1E20;
-    --text: #EDEDED; --muted: #9C9CA1; --faint: #64646A;
-    --hairline: rgba(255, 255, 255, .10); --border: #2A2A2C; --ring: rgba(255, 255, 255, .08);
-    --focus: #6C97F2; --glow: rgba(108, 151, 242, .18);
-    --shadow-nav: 0 8px 30px rgba(0, 0, 0, .45); --shadow-frame: none;
-    --shadow-chip: 0 6px 18px rgba(0, 0, 0, .5); --shadow-card: 0 24px 60px rgba(0, 0, 0, .55);
+    --canvas: #000000; --frame: #000000; --sunken: #1D1D1F; --raise: #1D1D1F;
+    --text: #F5F5F7; --muted: #86868B; --faint: #6E6E73;
+    --hairline: rgba(255, 255, 255, .08); --border: #424245; --ring: rgba(255, 255, 255, .06);
+    --focus: #2997FF; --glow: rgba(41, 151, 255, .12);
+    --shadow-nav: 0 4px 20px rgba(0, 0, 0, .5); --shadow-frame: none;
+    --shadow-chip: 0 4px 14px rgba(0, 0, 0, .45); --shadow-card: 0 16px 44px rgba(0, 0, 0, .55);
   }
 
   * { box-sizing: border-box; }
@@ -133,20 +133,18 @@
     padding: .55rem .6rem .55rem 1.2rem;
     border: 1px solid color-mix(in srgb, var(--text) 7%, transparent);
     border-radius: 46px;
-    background: color-mix(in srgb, var(--frame) 68%, transparent);
-    backdrop-filter: blur(30px) saturate(185%);
-    -webkit-backdrop-filter: blur(30px) saturate(185%);
+    background: color-mix(in srgb, var(--frame) 72%, transparent);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
     box-shadow:
-      0 0 0 5px color-mix(in srgb, var(--frame) 45%, transparent),
-      0 26px 64px -18px rgba(0, 0, 0, .26),
-      0 4px 16px rgba(0, 0, 0, .08),
-      inset 0 1px 0 color-mix(in srgb, #fff 45%, transparent);
+      0 8px 30px -8px rgba(0, 0, 0, .1),
+      0 2px 8px rgba(0, 0, 0, .05);
     transition: gap .32s ease, padding .32s ease, border-radius .32s ease, box-shadow .25s ease;
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .nav { background: color-mix(in srgb, var(--frame) 95%, transparent); }
+    .nav { background: color-mix(in srgb, var(--frame) 96%, transparent); }
   }
-  .nav.scrolled { box-shadow: 0 0 0 5px color-mix(in srgb, var(--frame) 45%, transparent), 0 16px 40px -14px rgba(0, 0, 0, .3), 0 3px 10px rgba(0, 0, 0, .12); }
+  .nav.scrolled { box-shadow: 0 10px 34px -10px rgba(0, 0, 0, .14), 0 2px 8px rgba(0, 0, 0, .06); }
 
   /* Desktop: collapse to a compact pill once the page is scrolled */
   @media (min-width: 821px) {
@@ -315,15 +313,15 @@
   }
   .js .hero-card { animation: bob 9s ease-in-out infinite; }
   .hero-card::before {
-    content: ""; position: absolute; inset: -34% -14% -46%;
-    background: radial-gradient(ellipse at 50% 60%, var(--glow), transparent 70%);
-    filter: blur(6px); z-index: -1;
+    content: ""; position: absolute; inset: -28% -12% -38%;
+    background: radial-gradient(ellipse at 50% 60%, var(--glow), transparent 72%);
+    filter: blur(8px); z-index: -1;
   }
   .hero-card .hc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: .8rem; }
   .hero-card .hc-top b { font-size: .9rem; font-weight: 700; }
   .hero-card .hc-top span { font-size: .74rem; color: var(--muted); }
   .hc-marks { display: flex; gap: .4rem; }
-  .hc-marks span { width: 30px; aspect-ratio: 1; border-radius: 8px; background: var(--text); display: grid; place-items: center; }
+  .hc-marks span { width: 30px; aspect-ratio: 1; border-radius: 9px; background: var(--text); display: grid; place-items: center; }
   .hc-marks span svg { width: 66%; height: 66%; }
   .hc-marks span svg .fg { fill: var(--frame); }
 
@@ -386,7 +384,7 @@
     transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   }
   .app:hover { transform: translateY(-3px); box-shadow: var(--shadow-chip); border-color: var(--border); }
-  .app-mark { width: 26px; aspect-ratio: 1; border-radius: 7px; background: var(--text); display: grid; place-items: center; flex: none; transition: rotate .3s ease; }
+  .app-mark { width: 26px; aspect-ratio: 1; border-radius: 8px; background: var(--text); display: grid; place-items: center; flex: none; transition: rotate .3s ease; }
   .app:hover .app-mark { rotate: -8deg; }
   .app-mark svg { width: 66%; height: 66%; }
   .app-mark svg .fg { fill: var(--frame); }
@@ -513,7 +511,7 @@
   .why-card p { margin: 0; font-size: .87rem; color: var(--muted); }
 
   .viz-marks { display: flex; gap: .5rem; }
-  .viz-marks span { width: 34px; aspect-ratio: 1; border-radius: 9px; background: var(--text); display: grid; place-items: center; }
+  .viz-marks span { width: 34px; aspect-ratio: 1; border-radius: 10px; background: var(--text); display: grid; place-items: center; }
   .viz-marks span svg { width: 64%; height: 64%; }
   .viz-marks span svg .fg { fill: var(--frame); }
   .js .viz-marks span { animation: bob 5s ease-in-out infinite; }
