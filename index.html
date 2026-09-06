@@ -229,56 +229,8 @@
   }
   .nav-toggle:hover { background: var(--sunken); }
 
-  /* ---------- Hero / orbit ---------- */
-  .hero { position: relative; text-align: center; padding: clamp(5.5rem, 9vw, 8rem) 0 clamp(2rem, 4vw, 3rem); }
-  .rings {
-    position: absolute; left: 50%; top: 46%;
-    transform: translate(-50%, -50%);
-    width: min(1180px, 128%); height: auto; z-index: 0; pointer-events: none;
-  }
-  .rings ellipse { fill: none; stroke: var(--ring); stroke-width: 1.1; }
-  .js .rings { animation: spin 150s linear infinite; }
-  @keyframes spin { from { transform: translate(-50%, -50%) rotate(0); } to { transform: translate(-50%, -50%) rotate(360deg); } }
-
-  .veil {
-    position: absolute; left: 50%; top: 44%;
-    transform: translate(-50%, -50%);
-    width: 62%; height: 74%;
-    background: radial-gradient(ellipse at center, var(--frame) 42%, transparent 78%);
-    z-index: 1; pointer-events: none;
-  }
-  .chip {
-    position: absolute;
-    width: clamp(38px, 4.6vw, 50px);
-    aspect-ratio: 1; border-radius: 50%;
-    background: var(--raise); border: 1px solid var(--hairline);
-    box-shadow: var(--shadow-chip);
-    display: grid; place-items: center; z-index: 2;
-    transition: scale .25s cubic-bezier(.2,.7,.2,1);
-  }
-  .chip svg { width: 52%; height: 52%; fill: var(--text); }
-  .js .chip { animation: bob 7s ease-in-out infinite; }
-  .js .chip:nth-child(2n) { animation-duration: 8.6s; animation-delay: -2.1s; }
-  .js .chip:nth-child(3n) { animation-duration: 6.4s; animation-delay: -4s; }
-  .js .chip:nth-child(4n) { animation-delay: -1.3s; }
-  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
-  .chip:hover { scale: 1.14; animation-play-state: paused; z-index: 6; }
-  .chip::after {
-    content: attr(data-tip);
-    position: absolute; bottom: calc(100% + 7px); left: 50%;
-    transform: translateX(-50%) translateY(4px);
-    background: var(--text); color: var(--frame);
-    font-size: .64rem; font-weight: 600; letter-spacing: .02em;
-    padding: .2rem .45rem; border-radius: 6px; white-space: nowrap;
-    opacity: 0; pointer-events: none; transition: opacity .18s ease, transform .18s ease;
-  }
-  .chip:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .chip.c1  { top: 12%; left: 21%; } .chip.c2  { top: 4%;  left: 44%; }
-  .chip.c3  { top: 13%; left: 70%; } .chip.c4  { top: 33%; left: 9%; }
-  .chip.c5  { top: 27%; left: 86%; } .chip.c6  { top: 54%; left: 5%; }
-  .chip.c7  { top: 49%; left: 91%; } .chip.c8  { top: 74%; left: 12%; }
-  .chip.c9  { top: 70%; left: 84%; } .chip.c10 { top: 88%; left: 30%; }
-  .chip.c11 { top: 90%; left: 60%; } .chip.c12 { top: 79%; left: 47%; }
+  /* ---------- Hero ---------- */
+  .hero { position: relative; text-align: center; padding: clamp(5.5rem, 9vw, 8rem) 0 clamp(2.5rem, 5vw, 4rem); }
 
   .hero-inner { position: relative; z-index: 3; max-width: 46rem; margin: 0 auto; }
   .hero-tag {
@@ -291,10 +243,7 @@
   .js .hero-tag .dot { animation: pulse 2.4s ease-in-out infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--glow); } 50% { opacity: .7; box-shadow: 0 0 0 5px transparent; } }
 
-  h1 {
-    font-size: clamp(2.35rem, 5.8vw, 4rem);
-    margin: 0; text-wrap: balance;
-  }
+  h1 { font-size: clamp(2.35rem, 5.8vw, 4rem); margin: 0; text-wrap: balance; }
   h1 em { font-style: normal; font-weight: 400; color: var(--muted); }
   .hero-inner > p {
     margin: 1.5rem auto 0;
@@ -304,18 +253,64 @@
   .hero-actions { display: flex; flex-wrap: wrap; gap: .7rem; justify-content: center; margin-top: 2rem; }
   .hero-actions .btn { padding: .75rem 1.25rem; font-size: .94rem; }
 
+  /* connect -> Business OS -> sync flow */
+  .hero-flow {
+    position: relative;
+    width: min(1000px, 100%);
+    margin: clamp(2.75rem, 6vw, 4.5rem) auto 0;
+    aspect-ratio: 1000 / 360;
+  }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+  .flow-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; z-index: 1; }
+  .flow-svg .fl-arcs circle { fill: none; stroke: var(--ring); stroke-width: 1; }
+  .flow-svg .fl-line { fill: none; stroke: var(--border); stroke-width: 1.4; }
+  .flow-svg .fl-node { fill: var(--text); }
+
+  .flow-node {
+    position: absolute; top: 50%; transform: translate(-50%, -50%);
+    display: inline-flex; align-items: center; gap: .4rem;
+    font-size: .72rem; font-weight: 650; letter-spacing: -.01em; color: var(--text);
+    background: var(--frame); border: 1px solid var(--border); border-radius: 999px;
+    padding: .34rem .72rem; box-shadow: var(--shadow-chip); white-space: nowrap; z-index: 4;
+  }
+  .flow-node::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--text); flex: none; }
+  .fn-l { left: 24%; }
+  .fn-r { left: 76%; }
+
+  .flow-chip {
+    position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px;
+    border-radius: 12px; display: grid; place-items: center; z-index: 3;
+    background: var(--frame); border: 1px solid var(--hairline); box-shadow: var(--shadow-chip);
+    color: var(--muted);
+  }
+  .flow-chip.fc svg { width: 52%; height: 52%; fill: currentColor; }
+  .flow-chip.fc svg[stroke] { fill: none; }
+  .flow-chip.fm { background: var(--ic); border-color: transparent; }
+  .flow-chip.fm svg { width: 60%; height: 60%; }
+  .flow-chip.fm svg .fg { fill: #fff; }
+  .js .flow-chip { animation: bob 7.5s ease-in-out infinite; }
+  .js .fc-l1, .js .fc-r2, .js .fc-r4 { animation-delay: -3s; }
+  .js .fc-l3, .js .fc-r1 { animation-delay: -5.4s; }
+  .fc-l1 { left: 7.4%; top: 19.4%; }
+  .fc-l2 { left: 7.4%; top: 50%; }
+  .fc-l3 { left: 7.4%; top: 80.6%; }
+  .fc-r1 { left: 92.6%; top: 15.3%; }
+  .fc-r2 { left: 92.6%; top: 38.3%; }
+  .fc-r3 { left: 92.6%; top: 61.7%; }
+  .fc-r4 { left: 92.6%; top: 84.7%; }
+
   .hero-card {
-    position: relative; z-index: 3;
-    max-width: 380px; margin: clamp(3rem, 7vw, 4.5rem) auto 0;
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 5;
+    width: clamp(260px, 34vw, 344px);
     background: var(--raise); border: 1px solid var(--hairline);
     border-radius: 16px; box-shadow: var(--shadow-card);
     padding: 1rem 1.1rem; text-align: left;
   }
-  .js .hero-card { animation: bob 9s ease-in-out infinite; }
   .hero-card::before {
-    content: ""; position: absolute; inset: -28% -12% -38%;
+    content: ""; position: absolute; inset: -30% -14% -40%;
     background: radial-gradient(ellipse at 50% 60%, var(--glow), transparent 72%);
-    filter: blur(8px); z-index: -1;
+    filter: blur(10px); z-index: -1;
   }
   .hero-card .hc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: .8rem; }
   .hero-card .hc-top b { font-size: .9rem; font-weight: 700; }
@@ -324,6 +319,21 @@
   .hc-marks span { width: 30px; aspect-ratio: 1; border-radius: 9px; background: var(--ic, var(--text)); display: grid; place-items: center; }
   .hc-marks span svg { width: 66%; height: 66%; }
   .hc-marks span svg .fg { fill: #fff; }
+
+  .flow-hub {
+    position: absolute; left: 50%; top: 83.3%; transform: translate(-50%, -50%); z-index: 4;
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--frame); border: 1px solid var(--border); box-shadow: var(--shadow-chip);
+    display: grid; place-items: center; color: var(--muted);
+  }
+  .flow-hub svg { width: 46%; height: 46%; }
+
+  @media (max-width: 760px) {
+    .hero-flow { aspect-ratio: auto; width: 100%; margin-top: clamp(2rem, 8vw, 3rem); }
+    .flow-svg, .flow-node, .flow-chip, .flow-hub { display: none; }
+    .hero-card { position: static; transform: none; margin: 0 auto; width: min(360px, 100%); }
+  }
+  @media (prefers-reduced-motion: reduce) { .js .flow-chip { animation: none; } }
 
   /* ---------- Stack marquee ---------- */
   .stack {
@@ -702,8 +712,6 @@
   @media (max-width: 860px) {
     .process-grid { grid-template-columns: 1fr; gap: 1.75rem; }
     .process-aside { position: static; }
-    .chip.c4, .chip.c5, .chip.c6, .chip.c7, .chip.c12 { display: none; }
-    .rings { width: 150%; }
   }
 
   @media (max-width: 760px) {
@@ -785,13 +793,9 @@
     .frame { padding: 12px 1.15rem 3rem; }
     .nav { top: 18px; }
     .nav-links { top: 88px; }
-    .chip { display: none; }
-    .rings { width: 150%; opacity: .55; }
-    .veil { width: 96%; height: 72%; }
     .hero { padding-top: 5.75rem; }
     h1 { font-size: clamp(1.95rem, 8.5vw, 2.45rem); }
     .hero-inner > p { font-size: 1rem; }
-    .hero-card { max-width: 100%; }
     .band { padding-top: clamp(2.75rem, 11vw, 3.5rem); }
     .band-head { gap: .75rem; }
     .band-head h2, .process-aside h2, .cta h2 { font-size: clamp(1.7rem, 7.5vw, 2.05rem); }
@@ -844,26 +848,6 @@
 <div class="frame">
 
   <header class="hero" id="top">
-    <svg class="rings" viewBox="0 0 1200 820" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-      <ellipse cx="600" cy="410" rx="210" ry="170"/>
-      <ellipse cx="600" cy="410" rx="380" ry="300"/>
-      <ellipse cx="600" cy="410" rx="545" ry="415"/>
-      <ellipse cx="600" cy="410" rx="705" ry="520"/>
-    </svg>
-    <span class="chip c1" data-tip="CRM"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="24,26 62,26 76,40 56,54 56,74 44,74 44,54 24,40"/></svg></span>
-    <span class="chip c2" data-tip="Invoice"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M32 30h36v6H32zM32 44h36v6H32zM32 58h22v6H32z"/><polygon points="70,26 70,38 82,38"/></svg></span>
-    <span class="chip c3" data-tip="Projects"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="22" y="26" width="40" height="12"/><polygon points="30,44 78,44 78,50 71,56 30,56"/><rect x="26" y="62" width="32" height="12"/></svg></span>
-    <span class="chip c4" data-tip="Engineering"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M40 26L20 50l20 24 8-6-14-18 14-18zM60 26l20 24-20 24-8-6 14-18-14-18z"/></svg></span>
-    <span class="chip c5" data-tip="AI"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,20 58,42 80,50 58,58 50,80 42,58 20,50 42,42"/></svg></span>
-    <span class="chip c6" data-tip="Helpdesk"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="24,22 78,22 78,58 42,58 26,74 30,58 24,58"/></svg></span>
-    <span class="chip c7" data-tip="Books"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="22,24 46,24 38,78 22,78"/><polygon points="54,24 78,24 78,78 62,78"/></svg></span>
-    <span class="chip c8" data-tip="Analytics"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="24" y="52" width="13" height="26"/><rect x="43" y="40" width="13" height="38"/><polygon points="62,32 68,26 76,26 76,78 62,78"/></svg></span>
-    <span class="chip c9" data-tip="Cloud"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M30 66h40a15 15 0 0 0 1-30 22 22 0 0 0-42-4A15 15 0 0 0 30 66z"/></svg></span>
-    <span class="chip c10" data-tip="Platform"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,20 80,36 80,64 50,80 20,64 20,36"/><polygon points="50,20 50,80 20,64 20,36" opacity=".5"/></svg></span>
-    <span class="chip c11" data-tip="Identity"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="28,24 72,24 72,50 50,78 28,50"/></svg></span>
-    <span class="chip c12" data-tip="Automation"><svg viewBox="0 0 100 100" aria-hidden="true"><path d="M56,20 32,54 47,54 43,80 70,44 54,44 60,20z"/></svg></span>
-    <div class="veil"></div>
-
     <div class="hero-inner">
       <span class="hero-tag"><span class="dot"></span> Studio &amp; product company</span>
       <h1 class="serif">Unlock your <em>digital potential</em> with us.</h1>
@@ -874,15 +858,50 @@
       </div>
     </div>
 
-    <div class="hero-card">
-      <div class="hc-top"><b>Business OS</b><span>12 apps &middot; 2 live</span></div>
-      <div class="hc-marks">
-        <span style="--ic:#007AFF"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon class="fg" points="24,26 62,26 76,40 56,54 56,74 44,74 44,54 24,40"/></svg></span>
-        <span style="--ic:#34C759"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon class="fg" points="28,20 62,20 76,34 76,80 28,80"/></svg></span>
-        <span style="--ic:#FF9500"><svg viewBox="0 0 100 100" aria-hidden="true"><rect class="fg" x="22" y="24" width="42" height="14"/><polygon class="fg" points="32,43 78,43 78,50 71,57 32,57"/><rect class="fg" x="26" y="62" width="34" height="14"/></svg></span>
-        <span style="--ic:#5AC8FA"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon class="fg" points="24,22 78,22 78,60 44,60 28,76 31,60 24,60"/></svg></span>
-        <span style="--ic:#5856D6"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon class="fg" points="22,22 46,22 38,78 22,78"/><polygon class="fg" points="54,22 78,22 78,78 62,78"/></svg></span>
+    <div class="hero-flow">
+      <svg class="flow-svg" viewBox="0 0 1000 360" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+        <g class="fl-arcs">
+          <circle cx="500" cy="180" r="112"/>
+          <circle cx="500" cy="180" r="178"/>
+          <circle cx="500" cy="180" r="246"/>
+        </g>
+        <path class="fl-line" d="M240 180H760"/>
+        <path class="fl-line" d="M240 180C162 180 150 70 74 70"/>
+        <path class="fl-line" d="M240 180C186 180 150 180 74 180"/>
+        <path class="fl-line" d="M240 180C162 180 150 290 74 290"/>
+        <path class="fl-line" d="M760 180C840 180 852 55 926 55"/>
+        <path class="fl-line" d="M760 180C840 180 852 138 926 138"/>
+        <path class="fl-line" d="M760 180C840 180 852 222 926 222"/>
+        <path class="fl-line" d="M760 180C840 180 852 305 926 305"/>
+        <path class="fl-line" d="M500 252V300"/>
+        <circle class="fl-node" cx="240" cy="180" r="5"/>
+        <circle class="fl-node" cx="760" cy="180" r="5"/>
+      </svg>
+
+      <span class="flow-node fn-l">Studio</span>
+      <span class="flow-node fn-r">Products</span>
+
+      <span class="flow-chip fc fc-l1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4.4L15 6l3 3-9.6 9.8L4 20z"/><path d="M14 5l3 3" fill="none" stroke="currentColor" stroke-width="2"/></svg></span>
+      <span class="flow-chip fc fc-l2"><svg viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/></svg></span>
+      <span class="flow-chip fc fc-l3"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.4L12 17l-1.9-5.6L4.5 10l5.6-1.4z"/></svg></span>
+
+      <span class="flow-chip fm fc-r1" style="--ic:#007AFF"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon class="fg" points="24,26 62,26 76,40 56,54 56,74 44,74 44,54 24,40"/></svg></span>
+      <span class="flow-chip fm fc-r2" style="--ic:#34C759"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon class="fg" points="28,20 62,20 76,34 76,80 28,80"/></svg></span>
+      <span class="flow-chip fm fc-r3" style="--ic:#FF9500"><svg viewBox="0 0 100 100" aria-hidden="true"><rect class="fg" x="22" y="24" width="42" height="14"/><polygon class="fg" points="32,43 78,43 78,50 71,57 32,57"/><rect class="fg" x="26" y="62" width="34" height="14"/></svg></span>
+      <span class="flow-chip fm fc-r4" style="--ic:#32ADE6"><svg viewBox="0 0 100 100" aria-hidden="true"><rect class="fg" x="24" y="52" width="13" height="26"/><rect class="fg" x="43" y="40" width="13" height="38"/><polygon class="fg" points="62,32 68,26 76,26 76,78 62,78"/></svg></span>
+
+      <div class="hero-card">
+        <div class="hc-top"><b>Business OS</b><span>12 apps &middot; 2 live</span></div>
+        <div class="hc-marks">
+          <span style="--ic:#007AFF"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon class="fg" points="24,26 62,26 76,40 56,54 56,74 44,74 44,54 24,40"/></svg></span>
+          <span style="--ic:#34C759"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon class="fg" points="28,20 62,20 76,34 76,80 28,80"/></svg></span>
+          <span style="--ic:#FF9500"><svg viewBox="0 0 100 100" aria-hidden="true"><rect class="fg" x="22" y="24" width="42" height="14"/><polygon class="fg" points="32,43 78,43 78,50 71,57 32,57"/><rect class="fg" x="26" y="62" width="34" height="14"/></svg></span>
+          <span style="--ic:#5AC8FA"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon class="fg" points="24,22 78,22 78,60 44,60 28,76 31,60 24,60"/></svg></span>
+          <span style="--ic:#5856D6"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon class="fg" points="22,22 46,22 38,78 22,78"/><polygon class="fg" points="54,22 78,22 78,78 62,78"/></svg></span>
+        </div>
       </div>
+
+      <span class="flow-hub"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg></span>
     </div>
   </header>
 
