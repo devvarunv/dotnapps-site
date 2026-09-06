@@ -130,15 +130,18 @@
     align-items: center;
     gap: .75rem;
     padding: .5rem .55rem .5rem .9rem;
-    border: 1px solid var(--hairline);
+    border: 1px solid color-mix(in srgb, var(--text) 9%, transparent);
     border-radius: 16px;
-    background: color-mix(in srgb, var(--frame) 84%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: var(--shadow-nav);
+    background: color-mix(in srgb, var(--frame) 64%, transparent);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    box-shadow: var(--shadow-nav), inset 0 1px 0 color-mix(in srgb, #fff 30%, transparent);
     transition: padding .25s ease, background .25s ease, box-shadow .25s ease;
   }
-  .nav.scrolled { padding-top: .38rem; padding-bottom: .38rem; background: color-mix(in srgb, var(--frame) 94%, transparent); box-shadow: var(--shadow-card); }
+  .nav.scrolled { padding-top: .38rem; padding-bottom: .38rem; background: color-mix(in srgb, var(--frame) 74%, transparent); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); box-shadow: var(--shadow-card); }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .nav, .nav.scrolled { background: color-mix(in srgb, var(--frame) 94%, transparent); }
+  }
   .brand { display: flex; align-items: center; gap: .5rem; font-weight: 700; font-size: 1.05rem; letter-spacing: -.02em; }
   .brand svg { width: 24px; height: 24px; display: block; border-radius: 6px; }
   .brand svg path { fill: var(--text); }
@@ -169,6 +172,7 @@
   .icon-btn { width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: .95rem; }
   .icon-btn:hover { color: var(--text); }
   .nav-toggle { display: none; }
+  .menu-theme { display: none; }
 
   /* ---------- Hero / orbit ---------- */
   .hero { position: relative; text-align: center; padding: clamp(2.25rem, 4.5vw, 3.75rem) 0 clamp(2rem, 4vw, 3rem); }
@@ -671,15 +675,31 @@
     .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
     .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
+    .nav-right > .icon-btn { display: none; }
+
     .nav-links {
       display: none;
       position: absolute; top: calc(100% + 8px); left: 0; right: 0;
       flex-direction: column; align-items: stretch; gap: 2px;
       margin: 0; padding: 8px;
-      background: var(--frame); border: 1px solid var(--border); border-radius: 14px;
+      background: color-mix(in srgb, var(--frame) 90%, transparent);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid color-mix(in srgb, var(--text) 9%, transparent);
+      border-radius: 14px;
       box-shadow: var(--shadow-card);
     }
     .nav.open .nav-links { display: flex; }
+    .menu-theme {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; height: auto;
+      margin-top: 4px; padding: .72rem .8rem;
+      font: inherit; font-size: .95rem; font-weight: 500; color: var(--muted);
+      background: transparent; border: 0; border-top: 1px solid var(--hairline);
+      border-radius: 0; cursor: pointer;
+    }
+    .menu-theme:hover { color: var(--text); }
+    .menu-theme .tw { font-size: 1rem; }
     .nav-links a, .nav-drop > button {
       font-size: .95rem; padding: .72rem .8rem; border-radius: 10px;
       width: 100%; justify-content: flex-start;
@@ -772,6 +792,7 @@
       </div>
       <a href="#process">How we work</a>
       <a href="#faq">FAQ</a>
+      <button class="menu-theme" type="button" data-theme-toggle aria-label="Switch colour theme">Theme <span class="tw" aria-hidden="true">&#9683;</span></button>
     </div>
     <div class="nav-right">
       <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch colour theme">&#9683;</button>
@@ -1252,7 +1273,7 @@
 
     /* theme toggle */
     var KEY = "dotnapps-site-theme";
-    var tbtn = document.querySelector("[data-theme-toggle]");
+    var tbtns = document.querySelectorAll("[data-theme-toggle]");
     try {
       var s = localStorage.getItem(KEY);
       if (s === "light" || s === "dark") root.setAttribute("data-theme", s);
@@ -1262,10 +1283,12 @@
       if (a) return a;
       return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     }
-    tbtn.addEventListener("click", function () {
-      var n = curTheme() === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", n);
-      try { localStorage.setItem(KEY, n); } catch (e) {}
+    tbtns.forEach(function (b) {
+      b.addEventListener("click", function () {
+        var n = curTheme() === "dark" ? "light" : "dark";
+        root.setAttribute("data-theme", n);
+        try { localStorage.setItem(KEY, n); } catch (e) {}
+      });
     });
 
     /* FAQ category tabs + single-open accordion */
