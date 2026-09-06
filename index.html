@@ -51,18 +51,18 @@
     font-size: 16px;
     line-height: 1.58;
     -webkit-font-smoothing: antialiased;
-    padding: clamp(0px, 2.4vw, 32px);
+    padding: clamp(0px, 1.5vw, 18px);
   }
 
   .frame {
-    max-width: 1120px;
+    max-width: 1440px;
     margin: 0 auto;
     background-color: var(--frame);
     background-image: repeating-linear-gradient(135deg, color-mix(in srgb, var(--text) 1.8%, transparent) 0 1px, transparent 1px 8px);
     border: 1px solid var(--hairline);
     border-radius: 26px;
     box-shadow: var(--shadow-frame);
-    padding: 14px clamp(1rem, 4vw, 2.5rem) clamp(2.5rem, 6vw, 4rem);
+    padding: 14px clamp(1rem, 4vw, 3rem) clamp(2.5rem, 6vw, 4rem);
     overflow: clip;
   }
 
@@ -165,7 +165,7 @@
   .icon-btn:hover { color: var(--text); }
 
   /* ---------- Hero / orbit ---------- */
-  .hero { position: relative; text-align: center; padding: clamp(3.5rem, 8vw, 6rem) 0 clamp(2.5rem, 5vw, 3.5rem); }
+  .hero { position: relative; text-align: center; padding: clamp(2.25rem, 4.5vw, 3.75rem) 0 clamp(2rem, 4vw, 3rem); }
   .rings {
     position: absolute; left: 50%; top: 46%;
     transform: translate(-50%, -50%);
@@ -278,7 +278,7 @@
 
   /* ---------- Section scaffold ---------- */
   section[id] { scroll-margin-top: 84px; }
-  .band { padding: clamp(3.75rem, 9vw, 6rem) 0 0; }
+  .band { padding: clamp(3rem, 6vw, 4.75rem) 0 0; }
   .band-head { text-align: center; max-width: 40rem; margin: 0 auto clamp(2rem, 5vw, 3rem); display: flex; flex-direction: column; align-items: center; gap: .9rem; }
   .band-head h2 { font-size: clamp(2rem, 5vw, 3rem); margin: 0; text-wrap: balance; }
   .band-head p { margin: 0; color: var(--muted); max-width: 34rem; }
