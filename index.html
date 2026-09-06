@@ -461,12 +461,42 @@
   .js .vg-pulse { animation: vgPulse 3.6s ease-out infinite; }
   @keyframes vgPulse { 0%, 58% { transform: scale(.3); opacity: 0; } 70% { transform: scale(1); opacity: .55; } 100% { transform: scale(2.7); opacity: 0; } }
 
-  .viz-chat { display: flex; flex-direction: column; gap: .4rem; width: 82%; }
-  .viz-chat b, .viz-chat i {
-    font-size: .68rem; font-style: normal; padding: .4rem .55rem; border-radius: 9px; max-width: 82%;
+  .viz-chat { display: flex; flex-direction: column; gap: .4rem; width: 84%; }
+  .viz-chat > span {
+    font-size: .68rem; font-style: normal; line-height: 1.35;
+    padding: .4rem .55rem; border-radius: 9px; max-width: 84%; font-weight: 500;
   }
-  .viz-chat b { align-self: flex-start; background: var(--frame); border: 1px solid var(--hairline); color: var(--muted); font-weight: 500; }
-  .viz-chat i { align-self: flex-end; background: var(--text); color: var(--frame); font-weight: 500; }
+  .vc-in { align-self: flex-start; background: var(--frame); border: 1px solid var(--hairline); color: var(--muted); }
+  .vc-out { align-self: flex-end; background: var(--text); color: var(--frame); }
+  .vc-typing { align-self: flex-end; background: var(--text); display: inline-flex; gap: 3px; align-items: center; padding: .5rem .6rem; }
+  .vc-typing i { width: 4px; height: 4px; border-radius: 50%; background: var(--frame); opacity: .45; }
+
+  .js .vc-typing { opacity: 0; }
+  .js .vc-in { animation: vcIn 6s ease-in-out infinite; }
+  .js .vc-typing { animation: vcType 6s ease-in-out infinite; }
+  .js .vc-out { animation: vcOut 6s ease-in-out infinite; }
+  .js .vc-typing i { animation: vcDot .9s ease-in-out infinite; }
+  .js .vc-typing i:nth-child(2) { animation-delay: .15s; }
+  .js .vc-typing i:nth-child(3) { animation-delay: .3s; }
+  @keyframes vcIn {
+    0%, 4% { opacity: 0; transform: translateY(6px); }
+    8%, 90% { opacity: 1; transform: none; }
+    96%, 100% { opacity: 0; transform: translateY(-4px); }
+  }
+  @keyframes vcType {
+    0%, 17% { opacity: 0; transform: translateY(4px); }
+    21%, 40% { opacity: 1; transform: none; }
+    43%, 100% { opacity: 0; }
+  }
+  @keyframes vcOut {
+    0%, 42% { opacity: 0; transform: translateY(6px) scale(.97); }
+    47%, 90% { opacity: 1; transform: none; }
+    96%, 100% { opacity: 0; transform: translateY(-4px); }
+  }
+  @keyframes vcDot {
+    0%, 100% { transform: translateY(0); opacity: .4; }
+    50% { transform: translateY(-2px); opacity: 1; }
+  }
 
   /* ---------- CTA ---------- */
   .cta { text-align: center; padding: clamp(3.75rem, 9vw, 6rem) 0 clamp(1.5rem, 4vw, 2.5rem); }
@@ -677,6 +707,8 @@
     .js .reveal, .js .stagger > * { opacity: 1 !important; transform: none !important; }
     .tl-body { opacity: 1 !important; }
     .stack-track { transform: none !important; }
+    .js .vc-in, .js .vc-out { opacity: 1 !important; transform: none !important; }
+    .js .vc-typing { display: none !important; }
   }
 </style>
 
@@ -1038,8 +1070,9 @@
       <div class="why-card">
         <div class="why-viz">
           <div class="viz-chat">
-            <b>Can we add nine more filters here?</b>
-            <i>Two cover 90% of use. The rest is scope that won't move your numbers.</i>
+            <span class="vc-in">Can we add nine more filters here?</span>
+            <span class="vc-typing"><i></i><i></i><i></i></span>
+            <span class="vc-out">Two cover 90% of use. The rest is scope that won't move your numbers.</span>
           </div>
         </div>
         <h3>Senior, and opinionated</h3>
