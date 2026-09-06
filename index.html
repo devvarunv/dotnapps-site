@@ -51,23 +51,20 @@
 
   body {
     margin: 0;
-    background: var(--canvas);
+    background: var(--frame);
     color: var(--text);
     font-family: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
     font-size: 16px;
     line-height: 1.58;
     -webkit-font-smoothing: antialiased;
-    padding: clamp(0px, 1.5vw, 18px);
+    padding: 0;
   }
 
   .frame {
-    max-width: 1440px;
+    max-width: 1280px;
     margin: 0 auto;
     background-color: var(--frame);
-    border: 1px solid var(--hairline);
-    border-radius: 26px;
-    box-shadow: var(--shadow-frame);
-    padding: clamp(1rem, 2.5vw, 1.6rem) clamp(1rem, 4vw, 3rem) clamp(2.5rem, 6vw, 4rem);
+    padding: clamp(1rem, 2.5vw, 1.6rem) clamp(1.15rem, 5vw, 3.25rem) clamp(2.5rem, 6vw, 4rem);
     overflow: clip;
   }
 
@@ -780,8 +777,7 @@
 
   /* Portrait phone */
   @media (max-width: 560px) {
-    body { padding: 0; }
-    .frame { border-radius: 0; border-left: 0; border-right: 0; padding: 12px 1.15rem 3rem; }
+    .frame { padding: 12px 1.15rem 3rem; }
     .nav { top: 10px; width: calc(100vw - 20px); }
     .nav-links { top: 66px; }
     .chip { display: none; }
