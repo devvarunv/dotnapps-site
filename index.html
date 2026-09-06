@@ -143,12 +143,39 @@
       0 26px 64px -18px rgba(0, 0, 0, .26),
       0 4px 16px rgba(0, 0, 0, .08),
       inset 0 1px 0 color-mix(in srgb, #fff 45%, transparent);
-    transition: box-shadow .25s ease, padding .28s ease;
+    transition: width .44s cubic-bezier(.2,.7,.2,1), gap .32s ease, padding .32s ease, border-radius .32s ease, box-shadow .25s ease;
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .nav { background: color-mix(in srgb, var(--frame) 95%, transparent); }
   }
   .nav.scrolled { box-shadow: 0 0 0 5px color-mix(in srgb, var(--frame) 45%, transparent), 0 16px 40px -14px rgba(0, 0, 0, .3), 0 3px 10px rgba(0, 0, 0, .12); }
+
+  /* Desktop: collapse to a compact pill once the page is scrolled */
+  @media (min-width: 821px) {
+    .nav.scrolled {
+      width: 232px;
+      gap: .55rem;
+      padding: .55rem .6rem .55rem 1.1rem;
+      border-radius: 999px;
+    }
+    .nav.scrolled .nav-links {
+      max-width: 0; opacity: 0; overflow: hidden; pointer-events: none; margin-left: .4rem;
+    }
+    .nav.scrolled .nav-toggle { display: inline-flex; max-width: 42px; opacity: 1; }
+    .nav.scrolled:hover, .nav.scrolled:focus-within, .nav.scrolled.open {
+      width: min(1080px, calc(100vw - 40px));
+    }
+    .nav.scrolled:hover .nav-links,
+    .nav.scrolled:focus-within .nav-links,
+    .nav.scrolled.open .nav-links {
+      max-width: 780px; opacity: 1; pointer-events: auto;
+    }
+    .nav.scrolled:hover .nav-toggle,
+    .nav.scrolled:focus-within .nav-toggle,
+    .nav.scrolled.open .nav-toggle {
+      max-width: 0; opacity: 0; margin: 0; overflow: hidden; pointer-events: none;
+    }
+  }
 
   .brand { display: flex; align-items: center; gap: .55rem; font-weight: 700; font-size: 1.06rem; letter-spacing: -.02em; flex: none; color: var(--text); }
   .brand svg { width: 26px; height: 26px; display: block; border-radius: 7px; }
@@ -157,6 +184,8 @@
   .nav-links {
     display: flex; align-items: center; gap: .15rem;
     margin-left: auto;
+    max-width: 780px; opacity: 1; overflow: hidden;
+    transition: max-width .44s cubic-bezier(.2,.7,.2,1), opacity .24s ease, margin .3s ease;
   }
   .nav-links a {
     font: inherit; color: var(--text); font-size: .95rem; font-weight: 600; letter-spacing: -.01em;
@@ -193,7 +222,9 @@
     display: none;
     align-items: center; justify-content: center; gap: 3.5px;
     width: 42px; height: 36px; flex: none; margin-left: auto;
+    max-width: 42px; opacity: 1;
     border: 0; border-radius: 999px; background: transparent; cursor: pointer;
+    transition: max-width .3s ease, opacity .18s ease, margin .3s ease;
   }
   .nav-toggle i { width: 4px; height: 4px; border-radius: 50%; background: var(--text); }
   .nav-toggle:hover { background: var(--sunken); }
@@ -694,7 +725,7 @@
       display: flex; position: fixed;
       top: 74px; left: 50%;
       transform: translateX(-50%) translateY(-8px);
-      width: min(380px, calc(100vw - 24px));
+      width: min(380px, calc(100vw - 24px)); max-width: none;
       opacity: 0; overflow: visible; pointer-events: none;
       flex-direction: column; align-items: stretch; gap: 2px;
       margin: 0; padding: 8px;
