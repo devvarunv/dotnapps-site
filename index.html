@@ -67,7 +67,7 @@
     border: 1px solid var(--hairline);
     border-radius: 26px;
     box-shadow: var(--shadow-frame);
-    padding: 14px clamp(1rem, 4vw, 3rem) clamp(2.5rem, 6vw, 4rem);
+    padding: clamp(1rem, 2.5vw, 1.6rem) clamp(1rem, 4vw, 3rem) clamp(2.5rem, 6vw, 4rem);
     overflow: clip;
   }
 
@@ -121,61 +121,76 @@
   .btn--ghost { background: var(--frame); border-color: var(--border); color: var(--text); }
   .btn--ghost:hover { background: var(--sunken); }
 
-  /* ---------- Nav ---------- */
+  /* ---------- Nav (centred collapsing pill) ---------- */
   .nav {
-    position: sticky;
-    top: 12px;
-    z-index: 40;
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
     display: flex;
     align-items: center;
-    gap: .75rem;
-    padding: .5rem .55rem .5rem .9rem;
-    border: 1px solid color-mix(in srgb, var(--text) 9%, transparent);
-    border-radius: 16px;
-    background: color-mix(in srgb, var(--frame) 64%, transparent);
-    backdrop-filter: blur(22px) saturate(180%);
-    -webkit-backdrop-filter: blur(22px) saturate(180%);
-    box-shadow: var(--shadow-nav), inset 0 1px 0 color-mix(in srgb, #fff 30%, transparent);
-    transition: padding .25s ease, background .25s ease, box-shadow .25s ease;
+    gap: .4rem;
+    max-width: calc(100vw - 28px);
+    padding: .4rem .45rem .4rem .8rem;
+    border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--frame) 72%, transparent);
+    backdrop-filter: blur(26px) saturate(180%);
+    -webkit-backdrop-filter: blur(26px) saturate(180%);
+    box-shadow: 0 18px 46px -12px rgba(0, 0, 0, .24), 0 3px 12px rgba(0, 0, 0, .09), inset 0 1px 0 color-mix(in srgb, #fff 42%, transparent);
+    transition: padding .32s cubic-bezier(.2,.7,.2,1), box-shadow .25s ease;
   }
-  .nav.scrolled { padding-top: .38rem; padding-bottom: .38rem; background: color-mix(in srgb, var(--frame) 74%, transparent); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); box-shadow: var(--shadow-card); }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .nav, .nav.scrolled { background: color-mix(in srgb, var(--frame) 94%, transparent); }
+    .nav { background: color-mix(in srgb, var(--frame) 95%, transparent); }
   }
-  .brand { display: flex; align-items: center; gap: .5rem; font-weight: 700; font-size: 1.05rem; letter-spacing: -.02em; }
-  .brand svg { width: 24px; height: 24px; display: block; border-radius: 6px; }
+  .nav.scrolled { box-shadow: 0 12px 32px -10px rgba(0, 0, 0, .26), 0 2px 8px rgba(0, 0, 0, .12); }
+
+  .brand { display: flex; align-items: center; gap: .5rem; font-weight: 700; font-size: 1rem; letter-spacing: -.02em; flex: none; }
+  .brand svg { width: 22px; height: 22px; display: block; border-radius: 6px; }
   .brand svg path { fill: var(--text); }
 
-  .nav-links { display: flex; align-items: center; gap: .1rem; margin-left: .75rem; }
-  .nav-links a, .nav-drop > button {
+  .nav-links {
+    display: flex; align-items: center; gap: .08rem;
+    max-width: 0; opacity: 0; overflow: hidden; pointer-events: none;
+    transition: max-width .42s cubic-bezier(.2,.7,.2,1), opacity .24s ease, margin .3s ease;
+  }
+  .nav-links a, .menu-theme {
     font: inherit; background: none; border: 0; cursor: pointer;
-    color: var(--muted); font-size: .89rem; font-weight: 500;
-    padding: .35rem .62rem; border-radius: 9px;
+    color: var(--muted); font-size: .87rem; font-weight: 500; white-space: nowrap;
+    padding: .38rem .6rem; border-radius: 999px;
     display: inline-flex; align-items: center; gap: .3rem;
     transition: color .18s ease, background .18s ease;
   }
-  .nav-links a:hover, .nav-drop > button:hover { color: var(--text); background: var(--sunken); }
-  .badge { font-size: .58rem; font-weight: 700; letter-spacing: .06em; border: 1px solid var(--border); border-radius: 5px; padding: .08rem .3rem; color: var(--focus); }
-  .nav-drop { position: relative; }
-  .nav-drop-menu {
-    position: absolute; top: calc(100% + .5rem); left: 0; min-width: 240px;
-    background: var(--frame); border: 1px solid var(--border); border-radius: 12px;
-    box-shadow: var(--shadow-card); padding: .4rem;
-    display: flex; flex-direction: column;
-    opacity: 0; visibility: hidden; transform: translateY(-6px);
-    transition: opacity .18s ease, transform .18s ease, visibility .18s;
+  .nav-links a:hover, .menu-theme:hover { color: var(--text); background: var(--sunken); }
+  .badge { font-size: .55rem; font-weight: 700; letter-spacing: .06em; border: 1px solid var(--border); border-radius: 5px; padding: .05rem .26rem; color: var(--focus); }
+  .nav-contact.btn { flex: none; margin-left: .3rem; padding: .46rem .95rem; font-size: .84rem; }
+  .menu-theme .tw { font-size: .95rem; }
+  .menu-theme .tl { display: none; }
+
+  .nav-toggle {
+    display: inline-flex; align-items: center; justify-content: center; gap: 3.5px;
+    width: 40px; height: 32px; flex: none;
+    max-width: 40px; opacity: 1;
+    border: 0; border-radius: 999px; background: transparent; cursor: pointer;
+    transition: max-width .3s ease, opacity .18s ease, margin .3s ease;
   }
-  .nav-drop:hover .nav-drop-menu, .nav-drop:focus-within .nav-drop-menu { opacity: 1; visibility: visible; transform: translateY(0); }
-  .nav-drop-menu a { padding: .5rem .6rem; border-radius: 8px; font-size: .85rem; color: var(--muted); }
-  .nav-drop-menu a:hover { background: var(--sunken); color: var(--text); }
-  .nav-right { margin-left: auto; display: flex; align-items: center; gap: .5rem; }
-  .icon-btn { width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: .95rem; }
-  .icon-btn:hover { color: var(--text); }
-  .nav-toggle { display: none; }
+  .nav-toggle i { width: 4px; height: 4px; border-radius: 50%; background: var(--text); }
+  .nav-toggle:hover { background: var(--sunken); }
+
+  @media (min-width: 681px) {
+    .nav:hover .nav-links, .nav:focus-within .nav-links, .nav.open .nav-links {
+      max-width: 760px; opacity: 1; pointer-events: auto; margin-left: .3rem;
+    }
+    .nav:hover .nav-toggle, .nav:focus-within .nav-toggle, .nav.open .nav-toggle {
+      max-width: 0; opacity: 0; margin: 0; pointer-events: none;
+    }
+  }
   .menu-theme { display: none; }
+  @media (min-width: 681px) { .menu-theme { display: inline-flex; } }
 
   /* ---------- Hero / orbit ---------- */
-  .hero { position: relative; text-align: center; padding: clamp(2.25rem, 4.5vw, 3.75rem) 0 clamp(2rem, 4vw, 3rem); }
+  .hero { position: relative; text-align: center; padding: clamp(2.75rem, 5vw, 4.25rem) 0 clamp(2rem, 4vw, 3rem); }
   .rings {
     position: absolute; left: 50%; top: 46%;
     transform: translate(-50%, -50%);
@@ -665,53 +680,36 @@
     footer { flex-direction: column; gap: 1.75rem; }
     footer .cols { margin-left: 0; gap: 1.75rem 2rem; }
 
-    .nav-toggle {
-      display: inline-flex; flex-direction: column; justify-content: center; gap: 4px;
-      width: 34px; height: 34px; padding: 0 8px;
-      border: 1px solid var(--border); border-radius: 9px; background: transparent; cursor: pointer;
-    }
-    .nav-toggle span { display: block; height: 2px; width: 100%; background: var(--text); border-radius: 2px; transition: transform .22s ease, opacity .18s ease; }
-    .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-    .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-    .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-    .nav-right > .icon-btn { display: none; }
-
+    .nav { gap: .3rem; padding: .35rem .4rem .35rem .7rem; max-width: calc(100vw - 20px); }
     .nav-links {
-      display: none;
-      position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+      display: flex; position: fixed;
+      top: 64px; left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      width: min(360px, calc(100vw - 20px));
+      max-width: none; opacity: 0; overflow: visible; pointer-events: none;
       flex-direction: column; align-items: stretch; gap: 2px;
       margin: 0; padding: 8px;
-      background: color-mix(in srgb, var(--frame) 90%, transparent);
+      background: color-mix(in srgb, var(--frame) 92%, transparent);
       backdrop-filter: blur(24px) saturate(180%);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       border: 1px solid color-mix(in srgb, var(--text) 9%, transparent);
-      border-radius: 14px;
+      border-radius: 16px;
       box-shadow: var(--shadow-card);
+      transition: opacity .22s ease, transform .22s ease;
     }
-    .nav.open .nav-links { display: flex; }
+    .nav.open .nav-links { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+    .nav-links a, .menu-theme {
+      font-size: .95rem; padding: .72rem .8rem; border-radius: 10px;
+      width: 100%; justify-content: flex-start; white-space: normal;
+    }
     .menu-theme {
       display: flex; align-items: center; justify-content: space-between;
-      width: 100%; height: auto;
-      margin-top: 4px; padding: .72rem .8rem;
-      font: inherit; font-size: .95rem; font-weight: 500; color: var(--muted);
-      background: transparent; border: 0; border-top: 1px solid var(--hairline);
-      border-radius: 0; cursor: pointer;
+      margin-top: 4px; border-top: 1px solid var(--hairline); border-radius: 0;
+      color: var(--muted);
     }
-    .menu-theme:hover { color: var(--text); }
+    .menu-theme .tl { display: inline; }
     .menu-theme .tw { font-size: 1rem; }
-    .nav-links a, .nav-drop > button {
-      font-size: .95rem; padding: .72rem .8rem; border-radius: 10px;
-      width: 100%; justify-content: flex-start;
-    }
-    .nav-drop { width: 100%; }
-    .nav-drop-menu {
-      position: static; opacity: 1; visibility: visible; transform: none;
-      display: none; min-width: 0; padding: 2px 0 6px .9rem;
-      border: 0; border-radius: 0; box-shadow: none; background: transparent;
-    }
-    .nav-drop.open .nav-drop-menu { display: flex; }
-    .nav-drop-menu a { font-size: .88rem; padding: .55rem .6rem; }
+    .nav-contact.btn { width: 100%; justify-content: center; margin: 6px 0 0; padding: .7rem 1rem; }
   }
 
   /* Comparison table -> stacked rows */
@@ -731,10 +729,8 @@
   @media (max-width: 560px) {
     body { padding: 0; }
     .frame { border-radius: 0; border-left: 0; border-right: 0; padding: 12px 1.15rem 3rem; }
-    .nav { top: 8px; gap: .4rem; padding: .45rem .5rem .45rem .75rem; }
-    .nav-right { gap: .4rem; }
-    .nav .btn { padding: .5rem .8rem; font-size: .82rem; }
-    .nav-right .btn--ghost { display: none; }
+    .nav { top: 10px; }
+    .nav-links { top: 58px; }
     .chip { display: none; }
     .rings { width: 150%; opacity: .55; }
     .veil { width: 96%; height: 72%; }
@@ -771,38 +767,26 @@
 </head>
 <body>
 
+<nav class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="Dotnapps home">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(0,100) scale(0.00926,-0.00926)"><path d="M0 5400 l0 -5400 5400 0 5400 0 0 5400 0 5400 -5400 0 -5400 0 0 -5400z m4530 1670 l0 -830 -876 0 -876 0 6 218 c3 119 9 493 12 830 l6 612 864 0 864 0 0 -830z m2472 93 l738 -738 0 -1295 0 -1295 -283 -283 -282 -282 -628 0 -627 0 0 1560 0 1560 -460 0 -460 0 0 755 0 755 632 0 633 0 737 -737z m-2492 -2638 l0 -1275 -588 0 -589 0 -271 236 -272 236 0 678 0 677 313 132 857 360 300 126 546 229 548 230 1 1 2 -573 2 -1274z"/></g></svg>
+    <span class="brand-name">Dotnapps</span>
+  </a>
+  <div class="nav-links" id="navmenu">
+    <a href="#work">Work</a>
+    <a href="#products">Products<span class="badge">NEW</span></a>
+    <a href="#services">Services</a>
+    <a href="#process">Process</a>
+    <a href="#faq">FAQ</a>
+    <button class="menu-theme" type="button" data-theme-toggle aria-label="Switch colour theme"><span class="tl">Theme</span> <span class="tw" aria-hidden="true">&#9683;</span></button>
+    <a class="btn btn--solid nav-contact" href="#contact">Contact</a>
+  </div>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navmenu" aria-label="Menu">
+    <i></i><i></i><i></i>
+  </button>
+</nav>
+
 <div class="frame">
-  <nav class="nav" id="nav">
-    <a class="brand" href="#top" aria-label="Dotnapps home">
-      <svg viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(0,100) scale(0.00926,-0.00926)"><path d="M0 5400 l0 -5400 5400 0 5400 0 0 5400 0 5400 -5400 0 -5400 0 0 -5400z m4530 1670 l0 -830 -876 0 -876 0 6 218 c3 119 9 493 12 830 l6 612 864 0 864 0 0 -830z m2472 93 l738 -738 0 -1295 0 -1295 -283 -283 -282 -282 -628 0 -627 0 0 1560 0 1560 -460 0 -460 0 0 755 0 755 632 0 633 0 737 -737z m-2492 -2638 l0 -1275 -588 0 -589 0 -271 236 -272 236 0 678 0 677 313 132 857 360 300 126 546 229 548 230 1 1 2 -573 2 -1274z"/></g></svg>
-      Dotnapps
-    </a>
-    <div class="nav-links" id="navmenu">
-      <a href="#work">Work</a>
-      <a href="#products">Products<span class="badge">NEW</span></a>
-      <div class="nav-drop">
-        <button type="button" aria-haspopup="true">Services &#9662;</button>
-        <div class="nav-drop-menu">
-          <a href="#cat-a">Product &amp; Software Development</a>
-          <a href="#cat-b">AI &amp; Automation</a>
-          <a href="#cat-c">Design &amp; Digital Experience</a>
-          <a href="#cat-d">Digital Transformation</a>
-          <a href="#cat-e">Technology &amp; Growth</a>
-        </div>
-      </div>
-      <a href="#process">How we work</a>
-      <a href="#faq">FAQ</a>
-      <button class="menu-theme" type="button" data-theme-toggle aria-label="Switch colour theme">Theme <span class="tw" aria-hidden="true">&#9683;</span></button>
-    </div>
-    <div class="nav-right">
-      <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch colour theme">&#9683;</button>
-      <a class="btn btn--ghost" href="#contact">Sign in</a>
-      <a class="btn btn--solid" href="#contact">Contact</a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navmenu" aria-label="Open menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
 
   <header class="hero" id="top">
     <svg class="rings" viewBox="0 0 1200 820" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
@@ -1377,6 +1361,10 @@
       });
       document.addEventListener("keydown", function (e) {
         if (e.key === "Escape" && nav.classList.contains("open")) closeMenu();
+      });
+      /* desktop: a click-opened pill re-collapses when the pointer leaves it */
+      nav.addEventListener("mouseleave", function () {
+        if (nav.classList.contains("open") && window.matchMedia("(min-width: 681px)").matches) closeMenu();
       });
     }
 
