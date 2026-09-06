@@ -309,11 +309,11 @@
   .product-top h3 { font-size: clamp(1.6rem, 3.8vw, 2.2rem); margin: 0; }
   .product-top p { margin: .5rem 0 0; color: var(--muted); max-width: 46ch; font-size: .96rem; }
 
-  .app-grid { margin-top: 1.75rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .6rem; }
+  .app-grid { margin-top: 1.75rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; }
   .app {
-    display: flex; align-items: center; gap: .6rem;
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .6rem;
     background: var(--frame); border: 1px solid var(--hairline);
-    border-radius: 11px; padding: .55rem .7rem;
+    border-radius: 11px; padding: .6rem .85rem; min-height: 52px;
     transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   }
   .app:hover { transform: translateY(-3px); box-shadow: var(--shadow-chip); border-color: var(--border); }
@@ -321,9 +321,12 @@
   .app:hover .app-mark { rotate: -8deg; }
   .app-mark svg { width: 66%; height: 66%; }
   .app-mark svg .fg { fill: var(--frame); }
-  .app .nm { font-size: .84rem; font-weight: 600; letter-spacing: -.01em; }
-  .app .st { margin-left: auto; font-size: .58rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
+  .app .nm { font-size: .84rem; font-weight: 600; letter-spacing: -.01em; line-height: 1.2; min-width: 0; }
+  .app .st { white-space: nowrap; font-size: .56rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
   .app .st.live { color: var(--focus); }
+  @media (max-width: 1000px) { .app-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 640px) { .app-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 400px) { .app-grid { grid-template-columns: 1fr; } }
 
   .product-links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1.75rem; }
   .product-links a { font-size: .88rem; font-weight: 600; border-bottom: 1px solid var(--text); padding-bottom: 2px; transition: gap .2s; }
