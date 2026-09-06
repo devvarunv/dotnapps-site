@@ -451,12 +451,15 @@
   .js .viz-marks span:nth-child(2) { animation-delay: -1.6s; }
   .js .viz-marks span:nth-child(3) { animation-delay: -3.2s; }
 
-  .viz-flow { display: flex; align-items: center; gap: 0; width: 78%; }
-  .viz-flow i { width: 12px; height: 12px; border-radius: 50%; background: var(--border); flex: none; }
-  .viz-flow s { flex: 1; height: 2px; background: var(--border); display: block; }
-  .viz-flow .runner { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: var(--focus); left: 11%; top: calc(50% - 5px); }
-  .js .viz-flow .runner { animation: run 3.4s cubic-bezier(.6,0,.4,1) infinite; }
-  @keyframes run { 0% { left: 11%; } 45% { left: 85%; } 55% { left: 85%; } 100% { left: 11%; } }
+  .viz-graph { height: 78%; width: auto; overflow: visible; }
+  .vg-grid { stroke: var(--hairline); stroke-width: 1; }
+  .vg-area { fill: color-mix(in srgb, var(--text) 9%, transparent); }
+  .vg-line { fill: none; stroke: var(--text); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .vg-end { fill: var(--focus); }
+  .vg-dot { fill: var(--focus); }
+  .vg-pulse { fill: none; stroke: var(--focus); stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; }
+  .js .vg-pulse { animation: vgPulse 3.6s ease-out infinite; }
+  @keyframes vgPulse { 0%, 58% { transform: scale(.3); opacity: 0; } 70% { transform: scale(1); opacity: .55; } 100% { transform: scale(2.7); opacity: 0; } }
 
   .viz-chat { display: flex; flex-direction: column; gap: .4rem; width: 82%; }
   .viz-chat b, .viz-chat i {
@@ -1014,10 +1017,20 @@
       </div>
       <div class="why-card">
         <div class="why-viz">
-          <div class="viz-flow">
-            <i></i><s></s><i></i><s></s><i></i><s></s><i></i>
-            <span class="runner"></span>
-          </div>
+          <svg class="viz-graph" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <line class="vg-grid" x1="4" y1="36" x2="196" y2="36"/>
+            <line class="vg-grid" x1="4" y1="68" x2="196" y2="68"/>
+            <path class="vg-area" d="M6 84 L44 70 L82 76 L120 46 L158 33 L194 14 L194 96 L6 96 Z"/>
+            <path id="vgLine" class="vg-line" d="M6 84 L44 70 L82 76 L120 46 L158 33 L194 14"/>
+            <circle class="vg-pulse" cx="194" cy="14" r="5"/>
+            <circle class="vg-end" cx="194" cy="14" r="3.5"/>
+            <circle class="vg-dot" r="3.5" opacity="0">
+              <animateMotion dur="3.6s" repeatCount="indefinite" rotate="0" calcMode="linear" keyPoints="0;1;1" keyTimes="0;0.68;1">
+                <mpath href="#vgLine"/>
+              </animateMotion>
+              <animate attributeName="opacity" dur="3.6s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.12;0.6;0.72;1"/>
+            </circle>
+          </svg>
         </div>
         <h3>Idea to scale, one team</h3>
         <p>Product, design, engineering, AI, and DevOps under one roof. No handoffs between vendors.</p>
@@ -1157,7 +1170,10 @@
     var root = document.documentElement;
     root.classList.add("js");
     var RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (RM) root.classList.add("reduce-motion");
+    if (RM) {
+      root.classList.add("reduce-motion");
+      document.querySelectorAll(".viz-graph").forEach(function (s) { try { s.pauseAnimations(); } catch (e) {} });
+    }
 
     /* theme toggle */
     var KEY = "dotnapps-site-theme";
