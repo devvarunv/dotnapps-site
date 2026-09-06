@@ -168,6 +168,7 @@
   .nav-right { margin-left: auto; display: flex; align-items: center; gap: .5rem; }
   .icon-btn { width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: .95rem; }
   .icon-btn:hover { color: var(--text); }
+  .nav-toggle { display: none; }
 
   /* ---------- Hero / orbit ---------- */
   .hero { position: relative; text-align: center; padding: clamp(2.25rem, 4.5vw, 3.75rem) 0 clamp(2rem, 4vw, 3rem); }
@@ -657,9 +658,40 @@
   }
 
   @media (max-width: 680px) {
-    .nav-links { display: none; }
     footer { flex-direction: column; gap: 1.75rem; }
     footer .cols { margin-left: 0; gap: 1.75rem 2rem; }
+
+    .nav-toggle {
+      display: inline-flex; flex-direction: column; justify-content: center; gap: 4px;
+      width: 34px; height: 34px; padding: 0 8px;
+      border: 1px solid var(--border); border-radius: 9px; background: transparent; cursor: pointer;
+    }
+    .nav-toggle span { display: block; height: 2px; width: 100%; background: var(--text); border-radius: 2px; transition: transform .22s ease, opacity .18s ease; }
+    .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+    .nav-links {
+      display: none;
+      position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+      flex-direction: column; align-items: stretch; gap: 2px;
+      margin: 0; padding: 8px;
+      background: var(--frame); border: 1px solid var(--border); border-radius: 14px;
+      box-shadow: var(--shadow-card);
+    }
+    .nav.open .nav-links { display: flex; }
+    .nav-links a, .nav-drop > button {
+      font-size: .95rem; padding: .72rem .8rem; border-radius: 10px;
+      width: 100%; justify-content: flex-start;
+    }
+    .nav-drop { width: 100%; }
+    .nav-drop-menu {
+      position: static; opacity: 1; visibility: visible; transform: none;
+      display: none; min-width: 0; padding: 2px 0 6px .9rem;
+      border: 0; border-radius: 0; box-shadow: none; background: transparent;
+    }
+    .nav-drop.open .nav-drop-menu { display: flex; }
+    .nav-drop-menu a { font-size: .88rem; padding: .55rem .6rem; }
   }
 
   /* Comparison table -> stacked rows */
@@ -725,7 +757,7 @@
       <svg viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(0,100) scale(0.00926,-0.00926)"><path d="M0 5400 l0 -5400 5400 0 5400 0 0 5400 0 5400 -5400 0 -5400 0 0 -5400z m4530 1670 l0 -830 -876 0 -876 0 6 218 c3 119 9 493 12 830 l6 612 864 0 864 0 0 -830z m2472 93 l738 -738 0 -1295 0 -1295 -283 -283 -282 -282 -628 0 -627 0 0 1560 0 1560 -460 0 -460 0 0 755 0 755 632 0 633 0 737 -737z m-2492 -2638 l0 -1275 -588 0 -589 0 -271 236 -272 236 0 678 0 677 313 132 857 360 300 126 546 229 548 230 1 1 2 -573 2 -1274z"/></g></svg>
       Dotnapps
     </a>
-    <div class="nav-links">
+    <div class="nav-links" id="navmenu">
       <a href="#work">Work</a>
       <a href="#products">Products<span class="badge">NEW</span></a>
       <div class="nav-drop">
@@ -745,6 +777,9 @@
       <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch colour theme">&#9683;</button>
       <a class="btn btn--ghost" href="#contact">Sign in</a>
       <a class="btn btn--solid" href="#contact">Contact</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navmenu" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
 
@@ -1288,6 +1323,39 @@
     var onScrollNav = function () { nav.classList.toggle("scrolled", window.scrollY > 40); };
     onScrollNav();
     window.addEventListener("scroll", onScrollNav, { passive: true });
+
+    /* mobile menu */
+    var navToggle = document.querySelector(".nav-toggle");
+    if (navToggle) {
+      var closeMenu = function () {
+        nav.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        var d = nav.querySelector(".nav-drop");
+        if (d) d.classList.remove("open");
+      };
+      navToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var open = nav.classList.toggle("open");
+        navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        if (!open) { var d = nav.querySelector(".nav-drop"); if (d) d.classList.remove("open"); }
+      });
+      var dropBtn = nav.querySelector(".nav-drop > button");
+      if (dropBtn) dropBtn.addEventListener("click", function (e) {
+        if (window.matchMedia("(max-width: 680px)").matches) {
+          e.preventDefault();
+          dropBtn.parentElement.classList.toggle("open");
+        }
+      });
+      nav.querySelectorAll(".nav-links a").forEach(function (a) {
+        a.addEventListener("click", closeMenu);
+      });
+      document.addEventListener("click", function (e) {
+        if (nav.classList.contains("open") && !nav.contains(e.target)) closeMenu();
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && nav.classList.contains("open")) closeMenu();
+      });
+    }
 
     /* scroll reveal */
     var revealEls = document.querySelectorAll(".reveal, .stagger");
