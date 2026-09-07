@@ -822,15 +822,38 @@
 
   /* Comparison table -> stacked rows */
   @media (max-width: 620px) {
-    .compare table, .compare thead, .compare tbody, .compare tr, .compare th, .compare td { display: block; }
+    .compare { border: 0; border-radius: 0; overflow: visible; background: transparent; }
+    .compare-wrap { overflow: visible; }
+    .compare table, .compare tbody, .compare tr, .compare th, .compare td { display: block; }
     .compare table { min-width: 0; }
-    .compare thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-    .compare tbody tr { border-bottom: 1px solid var(--hairline); padding: .85rem 0; }
-    .compare tbody tr:last-child { border-bottom: 0; }
-    .compare tbody th { border: 0; color: var(--text); font-weight: 650; font-size: .95rem; padding: 0 1.05rem .4rem; }
-    .compare tbody td { border: 0; padding: .28rem 1.05rem; display: flex; justify-content: space-between; gap: 1.25rem; text-align: right; }
-    .compare tbody td::before { content: attr(data-label); color: var(--faint); font-weight: 500; text-align: left; }
-    .compare tbody td.col-us { background: transparent; font-weight: 650; }
+    .compare thead { display: none; }
+
+    .compare tbody tr {
+      border: 1px solid var(--hairline); border-radius: 14px;
+      background: var(--frame); padding: .9rem 1rem 1rem; margin-bottom: .6rem;
+    }
+    .compare tbody tr:last-child { margin-bottom: 0; }
+    .compare tbody th {
+      border: 0; border-bottom: 1px solid var(--hairline);
+      padding: 0 0 .6rem; margin-bottom: .5rem;
+      font-size: .95rem; font-weight: 650; color: var(--text);
+    }
+    .compare tbody td {
+      border: 0; padding: .42rem 0;
+      display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+      font-size: .88rem; text-align: right; color: var(--muted);
+    }
+    .compare tbody td::before {
+      content: attr(data-label); flex: none;
+      color: var(--faint); font-weight: 600; font-size: .68rem;
+      letter-spacing: .06em; text-transform: uppercase; text-align: left;
+    }
+    .compare tbody td.col-us {
+      margin: .35rem -.55rem 0; padding: .5rem .6rem; border-radius: 9px;
+      background: color-mix(in srgb, var(--focus) 8%, transparent);
+      color: var(--text); font-weight: 650;
+    }
+    .compare tbody td.col-us::before { color: var(--focus); }
   }
 
   /* Portrait phone */
