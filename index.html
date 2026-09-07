@@ -131,21 +131,28 @@
     align-items: center;
     gap: 1.1rem;
     padding: .55rem .6rem .55rem 1.2rem;
-    border: 1px solid color-mix(in srgb, var(--text) 7%, transparent);
+    border: 1px solid color-mix(in srgb, var(--frame) 55%, transparent);
     border-radius: 46px;
-    background: color-mix(in srgb, var(--frame) 72%, transparent);
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    background: color-mix(in srgb, var(--frame) 56%, transparent);
+    backdrop-filter: blur(42px) saturate(200%);
+    -webkit-backdrop-filter: blur(42px) saturate(200%);
     box-shadow:
-      0 8px 30px -8px rgba(0, 0, 0, .1),
-      0 2px 8px rgba(0, 0, 0, .05);
+      0 12px 36px -10px rgba(0, 0, 0, .16),
+      0 3px 12px rgba(0, 0, 0, .06),
+      inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--text) 4%, transparent);
     transition: gap .32s ease, padding .32s ease, border-radius .32s ease, box-shadow .25s ease;
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .nav { background: color-mix(in srgb, var(--frame) 96%, transparent); }
     .nav-links { background: color-mix(in srgb, var(--frame) 97%, transparent) !important; }
   }
-  .nav.scrolled { box-shadow: 0 10px 34px -10px rgba(0, 0, 0, .14), 0 2px 8px rgba(0, 0, 0, .06); }
+  .nav.scrolled {
+    box-shadow:
+      0 14px 38px -10px rgba(0, 0, 0, .18), 0 3px 12px rgba(0, 0, 0, .07),
+      inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--text) 4%, transparent);
+  }
 
   /* Desktop: collapse to a compact pill once the page is scrolled */
   @media (min-width: 821px) {
@@ -841,11 +848,11 @@
     .nav {
       top: 16px;
       width: auto; max-width: calc(100vw - 2rem);
-      gap: .8rem; padding: .42rem .5rem .42rem .95rem; border-radius: 999px;
+      gap: 1.15rem; padding: .5rem .8rem .5rem 1.25rem; border-radius: 999px;
       transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
     }
-    .nav .brand { font-size: .98rem; transition: opacity .2s ease; }
-    .nav .brand svg { width: 19px; height: 19px; }
+    .nav .brand { font-size: 1rem; transition: opacity .2s ease; }
+    .nav .brand svg { width: 20px; height: 20px; }
     .nav-toggle { display: inline-flex; margin-left: 0; width: 34px; height: 30px; }
     .nav-toggle i { width: 4.5px; height: 4.5px; }
 
