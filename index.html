@@ -668,6 +668,62 @@
   .ind:hover { border-color: var(--text); }
   .ind:hover::after { opacity: 1; transform: translate(0, 0); }
 
+  /* ---------- Match game ---------- */
+  html:not(.js) #play { display: none; }
+  .game { max-width: 30rem; margin: 0 auto; }
+  .game-bar { display: flex; align-items: center; gap: 1.1rem; margin-bottom: 1rem; }
+  .game-stat { font-size: .8rem; color: var(--muted); }
+  .game-stat b { color: var(--text); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .game-reset {
+    margin-left: auto; font: inherit; font-size: .78rem; font-weight: 600;
+    color: var(--text); background: var(--frame);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: .4rem .95rem; cursor: pointer;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .game-reset:hover { border-color: var(--text); transform: translateY(-1px); }
+  .game-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; }
+  .gcard {
+    appearance: none; -webkit-appearance: none; border: 0; padding: 0; background: none;
+    position: relative; display: block;
+    aspect-ratio: 1; cursor: pointer; perspective: 700px; border-radius: 13px;
+  }
+  .gcard:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .gcard.is-done { cursor: default; opacity: .6; }
+  .gcard-inner {
+    position: absolute; inset: 0;
+    transform-style: preserve-3d;
+    transition: transform .42s cubic-bezier(.4, .15, .2, 1);
+  }
+  .gcard.is-up .gcard-inner, .gcard.is-done .gcard-inner { transform: rotateY(180deg); }
+  .gcard-face {
+    position: absolute; inset: 0;
+    -webkit-backface-visibility: hidden; backface-visibility: hidden;
+    display: grid; place-items: center; gap: .32rem;
+    border: 1px solid var(--hairline); border-radius: 13px;
+  }
+  .gcard-back { background: var(--sunken); }
+  .gcard-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); opacity: .5; }
+  .gcard-front {
+    transform: rotateY(180deg); background: var(--frame); padding: .35rem;
+    align-content: center;
+  }
+  .gcard-front .app-mark { width: clamp(26px, 8.5vw, 34px); border-radius: 27%; }
+  .gcard-nm {
+    font-size: .58rem; font-weight: 650; letter-spacing: -.01em;
+    color: var(--muted); text-align: center; line-height: 1.15;
+  }
+  .gcard.is-done .gcard-front { border-color: color-mix(in srgb, var(--focus) 45%, var(--hairline)); }
+  .game-win { margin: 1.15rem 0 0; text-align: center; font-size: .95rem; color: var(--text); }
+  .game-win b { font-variant-numeric: tabular-nums; }
+  .game-win a { border-bottom: 1px solid var(--text); padding-bottom: 1px; }
+  .game-win a:hover { opacity: .7; }
+  .reduce-motion .gcard-inner { transition: none; }
+  @media (max-width: 420px) {
+    .game-board { gap: .4rem; }
+    .gcard-nm { font-size: .54rem; }
+  }
+
   /* ---------- Comparison ---------- */
   .compare { border: 1px solid var(--hairline); border-radius: 18px; overflow: hidden; }
   .compare-wrap { overflow-x: auto; }
@@ -1054,6 +1110,25 @@
         <a href="https://claude.ai/code/artifact/77075769-77a8-4963-8531-c20fbe7a84b4">View the app marks &rarr;</a>
       </div>
       <p class="product-note">Want a product like this for your business? That's what the services below are for.</p>
+    </div>
+  </section>
+
+  <!-- ===================== PLAY ===================== -->
+  <section class="band" id="play">
+    <div class="band-head reveal">
+      <span class="eyebrow-pill">Coffee break</span>
+      <h2 class="serif">Match the suite</h2>
+      <p>Flip two cards at a time and clear all six pairs. Every icon is a Business OS app we're building.</p>
+    </div>
+
+    <div class="game reveal" data-game>
+      <div class="game-bar">
+        <span class="game-stat">Moves <b data-moves>0</b></span>
+        <span class="game-stat">Pairs <b data-pairs>0</b>/6</span>
+        <button class="game-reset" type="button" data-reset>New game</button>
+      </div>
+      <div class="game-board" data-board aria-label="Memory match board"></div>
+      <p class="game-win" data-win hidden></p>
     </div>
   </section>
 
@@ -1555,6 +1630,89 @@
       window.addEventListener("resize", reqProgress);
     } else if (timeline) {
       steps.forEach(function (st) { st.classList.add("active"); });
+    }
+
+    /* Business OS memory match game */
+    var gameWrap = document.querySelector("[data-game]");
+    if (gameWrap) {
+      var APPS = [
+        { nm: "CRM", ic: "#007AFF", g: '<polygon class="fg" points="24,26 62,26 76,40 56,54 56,74 44,74 44,54 24,40"/>' },
+        { nm: "Invoice", ic: "#34C759", g: '<polygon class="fg" points="28,20 62,20 76,34 76,80 28,80"/>' },
+        { nm: "Projects", ic: "#FF9500", g: '<rect class="fg" x="22" y="24" width="42" height="14"/><polygon class="fg" points="32,43 78,43 78,50 71,57 32,57"/><rect class="fg" x="26" y="62" width="34" height="14"/>' },
+        { nm: "Helpdesk", ic: "#5AC8FA", g: '<polygon class="fg" points="24,22 78,22 78,60 44,60 28,76 31,60 24,60"/>' },
+        { nm: "Books", ic: "#5856D6", g: '<path class="fg" d="M48 32C40 27 30 25 22 27C21 27 20 28 20 29V68C20 69 21 70 22 70C30 68 40 70 48 75Z"/><path class="fg" d="M52 32C60 27 70 25 78 27C79 27 80 28 80 29V68C80 69 79 70 78 70C70 68 60 70 52 75Z"/>' },
+        { nm: "Analytics", ic: "#32ADE6", g: '<rect class="fg" x="24" y="52" width="14" height="26"/><rect class="fg" x="43" y="40" width="14" height="38"/><polygon class="fg" points="62,32 68,26 76,26 76,78 62,78"/>' },
+        { nm: "Automation", ic: "#00C7BE", g: '<polygon class="fg" points="56,20 32,54 47,54 43,80 70,44 54,44 60,20"/>' },
+        { nm: "Identity", ic: "#FF3B30", g: '<polygon class="fg" points="28,24 72,24 72,50 50,78 28,50"/>' }
+      ];
+      var NEED = 6;
+      var board = gameWrap.querySelector("[data-board]");
+      var movesEl = gameWrap.querySelector("[data-moves]");
+      var pairsEl = gameWrap.querySelector("[data-pairs]");
+      var winEl = gameWrap.querySelector("[data-win]");
+      var resetBtn = gameWrap.querySelector("[data-reset]");
+      var lock = false, first = null, moves = 0, pairs = 0;
+
+      var shuffle = function (a) {
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1)), t = a[i];
+          a[i] = a[j]; a[j] = t;
+        }
+        return a;
+      };
+
+      var build = function () {
+        board.innerHTML = "";
+        winEl.hidden = true; winEl.textContent = "";
+        lock = false; first = null; moves = 0; pairs = 0;
+        movesEl.textContent = "0"; pairsEl.textContent = "0";
+        var picks = shuffle(APPS.slice()).slice(0, NEED);
+        shuffle(picks.concat(picks)).forEach(function (app) {
+          var btn = document.createElement("button");
+          btn.className = "gcard";
+          btn.type = "button";
+          btn.dataset.key = app.nm;
+          btn.setAttribute("aria-label", "Hidden card");
+          btn.innerHTML =
+            '<span class="gcard-inner">' +
+              '<span class="gcard-face gcard-back" aria-hidden="true"><span class="gcard-dot"></span></span>' +
+              '<span class="gcard-face gcard-front" style="--ic:' + app.ic + '">' +
+                '<span class="app-mark"><svg viewBox="0 0 100 100">' + app.g + '</svg></span>' +
+                '<span class="gcard-nm">' + app.nm + '</span>' +
+              '</span>' +
+            '</span>';
+          btn.addEventListener("click", function () { flip(btn); });
+          board.appendChild(btn);
+        });
+      };
+
+      var flip = function (btn) {
+        if (lock || btn.classList.contains("is-up") || btn.classList.contains("is-done")) return;
+        btn.classList.add("is-up");
+        btn.setAttribute("aria-label", btn.dataset.key + ", revealed");
+        if (!first) { first = btn; return; }
+        moves++; movesEl.textContent = String(moves);
+        var a = first; first = null;
+        if (a.dataset.key === btn.dataset.key) {
+          a.classList.add("is-done"); btn.classList.add("is-done");
+          pairs++; pairsEl.textContent = String(pairs);
+          if (pairs === NEED) {
+            winEl.hidden = false;
+            winEl.innerHTML = "Cleared in <b>" + moves + "</b> moves. That's Business OS &mdash; <a href=\"#products\">one account, one bill</a>.";
+          }
+        } else {
+          lock = true;
+          setTimeout(function () {
+            a.classList.remove("is-up"); btn.classList.remove("is-up");
+            a.setAttribute("aria-label", "Hidden card");
+            btn.setAttribute("aria-label", "Hidden card");
+            lock = false;
+          }, 720);
+        }
+      };
+
+      resetBtn.addEventListener("click", build);
+      build();
     }
 
     if (RM) return; /* skip pointer-motion niceties */
