@@ -737,6 +737,7 @@
       0 2px 5px color-mix(in srgb, var(--text) 10%, transparent);
   }
   .game-pad-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+  @media (max-width: 560px) { .game-level { display: none; } }
 
   /* ---------- Comparison ---------- */
   .compare { border: 1px solid var(--hairline); border-radius: 18px; overflow: hidden; }
@@ -1198,8 +1199,10 @@
 
     <div class="game reveal" data-game>
       <div class="game-bar">
+        <span class="game-stat">Time <b data-time>0</b>s</span>
         <span class="game-stat">Shipped <b data-score>0</b></span>
         <span class="game-stat">Best <b data-best>0</b></span>
+        <span class="game-stat game-level">Pace <b data-level>Warm-up</b></span>
         <button class="game-btn" type="button" data-start>Start</button>
       </div>
       <div class="game-stage" data-stage tabindex="0" role="button" aria-label="Endless runner — press Space or tap to jump">
@@ -1664,6 +1667,8 @@
       var ctx = canvas.getContext("2d");
       var scoreEl = gameWrap.querySelector("[data-score]");
       var bestEl = gameWrap.querySelector("[data-best]");
+      var timeEl = gameWrap.querySelector("[data-time]");
+      var levelEl = gameWrap.querySelector("[data-level]");
       var msgEl = gameWrap.querySelector("[data-msg]");
       var hintEl = gameWrap.querySelector("[data-hint]");
       var startBtn = gameWrap.querySelector("[data-start]");
@@ -1699,6 +1704,16 @@
 
       var stateG = "idle"; /* idle | run | over */
       var runner, obstacles, clouds, dashes, speed, scoreAcc, shown, spawnIn, frame, raf, lastT;
+      var elapsed, shownT, diff, curLevel;
+
+      /* difficulty is a 0..1 ramp driven purely by seconds survived */
+      var LEVELS = [
+        [0.14, "Warm-up"], [0.38, "Easy"], [0.62, "Cruising"], [0.84, "Brisk"], [1.1, "Relentless"]
+      ];
+      var levelFor = function (d) {
+        for (var i = 0; i < LEVELS.length; i++) if (d < LEVELS[i][0]) return LEVELS[i][1];
+        return "Relentless";
+      };
 
       var reset = function () {
         runner = { x: 64, y: GROUND, w: 34, h: 34, vy: 0, onGround: true };
@@ -1706,7 +1721,8 @@
         clouds = [{ x: 170, y: 38, s: 0.16 }, { x: 400, y: 24, s: 0.1 }, { x: 600, y: 52, s: 0.22 }];
         dashes = [];
         for (var i = 0; i < 10; i++) dashes.push(i * 74 + 12);
-        speed = 234; scoreAcc = 0; shown = 0; spawnIn = 250; frame = 0;
+        speed = 205; scoreAcc = 0; shown = 0; spawnIn = 300; frame = 0;
+        elapsed = 0; shownT = -1; diff = 0; curLevel = "";
       };
 
       var jump = function () {
@@ -1714,14 +1730,21 @@
       };
 
       var spawnObstacle = function () {
-        var r = Math.random(), o;
-        if (r < 0.22) o = { w: 46, h: 22 };
-        else if (r < 0.56) o = { w: 22, h: 20 };
-        else if (r < 0.82) o = { w: 26, h: 30 };
-        else o = { w: 30, h: 38 };
-        o.x = W + 20;
+        var d = diff, r = Math.random(), o;
+        var small = { w: 22, h: 20 }, tallShort = { w: 26, h: 26 },
+            tall = { w: 26, h: 32 }, dbl = { w: 46, h: 22 }, bigTall = { w: 30, h: 38 };
+        if (d < 0.25) {
+          o = r < 0.78 ? small : tallShort;                       /* easy: low singles */
+        } else if (d < 0.6) {
+          o = r < 0.44 ? small : r < 0.72 ? tallShort : r < 0.9 ? tall : dbl;
+        } else {
+          o = r < 0.28 ? small : r < 0.52 ? tall : r < 0.8 ? dbl : bigTall;
+        }
+        o = { w: o.w, h: o.h, x: W + 20 };
         obstacles.push(o);
-        spawnIn = Math.max(150, (0.9 + Math.random() * 0.62) * speed);
+        /* seconds of clear track before the next one, tightening with time */
+        var gapS = (1.55 - d * 0.82) + Math.random() * (0.55 - d * 0.34);
+        spawnIn = Math.max(135, gapS * speed);
       };
 
       var overlap = function (a, b) {
@@ -1730,7 +1753,17 @@
 
       var step = function (dt) {
         frame++;
-        speed = Math.min(558, speed + dt * 6.5);
+        elapsed += dt;
+        var ws = Math.floor(elapsed);
+        if (ws !== shownT) { shownT = ws; timeEl.textContent = String(ws); }
+
+        /* 0 -> 1 over the first 50s, then a slow endless creep */
+        diff = Math.min(1, elapsed / 50);
+        speed = 205 + diff * 360 + Math.max(0, elapsed - 50) * 1.6;
+        if (speed > 640) speed = 640;
+        var lvl = levelFor(diff);
+        if (lvl !== curLevel) { curLevel = lvl; levelEl.textContent = lvl; }
+
         scoreAcc += speed * dt * 0.025;
         var s = Math.floor(scoreAcc);
         if (s !== shown) { shown = s; scoreEl.textContent = String(s); }
@@ -1866,6 +1899,8 @@
         hintEl.hidden = true;
         msgEl.textContent = "";
         scoreEl.textContent = "0";
+        timeEl.textContent = "0";
+        levelEl.textContent = "Warm-up";
         startBtn.disabled = true;
         startBtn.textContent = "Running…";
         window.cancelAnimationFrame(raf);
@@ -1880,12 +1915,13 @@
         startBtn.textContent = "Run again";
         hintEl.textContent = coarse ? "Tap the button to run again" : "Space or tap to run again";
         hintEl.hidden = false;
-        var line = "You shipped <b>" + shown + "</b> before the bugs caught up.";
+        var secs = Math.floor(elapsed);
+        var line = "You lasted <b>" + secs + "s</b> &mdash; <b>" + shown + "</b> shipped &mdash; at <b>" + curLevel + "</b> pace.";
         if (shown > best) {
           best = shown;
           try { localStorage.setItem(BEST_KEY, String(best)); } catch (e) {}
           bestEl.textContent = String(best);
-          line = "New best &mdash; <b>" + shown + "</b> shipped. <a href=\"#contact\">Do it for real</a>.";
+          line = "New best &mdash; <b>" + shown + "</b> shipped in <b>" + secs + "s</b>. <a href=\"#contact\">Do it for real</a>.";
         }
         msgEl.innerHTML = line;
       }
