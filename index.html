@@ -668,61 +668,54 @@
   .ind:hover { border-color: var(--text); }
   .ind:hover::after { opacity: 1; transform: translate(0, 0); }
 
-  /* ---------- Match game ---------- */
+  /* ---------- Bug-hunt game ---------- */
   html:not(.js) #play { display: none; }
-  .game { max-width: 30rem; margin: 0 auto; }
-  .game-bar { display: flex; align-items: center; gap: 1.1rem; margin-bottom: 1rem; }
+  .game { max-width: 23rem; margin: 0 auto; }
+  .game-bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
   .game-stat { font-size: .8rem; color: var(--muted); }
   .game-stat b { color: var(--text); font-weight: 700; font-variant-numeric: tabular-nums; }
-  .game-reset {
+  .game-btn {
     margin-left: auto; font: inherit; font-size: .78rem; font-weight: 600;
-    color: var(--text); background: var(--frame);
-    border: 1px solid var(--border); border-radius: 999px;
-    padding: .4rem .95rem; cursor: pointer;
-    transition: border-color .2s ease, transform .2s ease;
+    color: var(--frame); background: var(--text);
+    border: 1px solid var(--text); border-radius: 999px;
+    padding: .45rem 1.15rem; cursor: pointer;
+    transition: transform .2s ease, opacity .2s ease;
   }
-  .game-reset:hover { border-color: var(--text); transform: translateY(-1px); }
-  .game-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; }
-  .gcard {
-    appearance: none; -webkit-appearance: none; border: 0; padding: 0; background: none;
-    position: relative; display: block;
-    aspect-ratio: 1; cursor: pointer; perspective: 700px; border-radius: 13px;
+  .game-btn:hover { transform: translateY(-1px); }
+  .game-btn:disabled { opacity: .45; cursor: default; transform: none; }
+  .game-board {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: .55rem;
+    touch-action: manipulation;
   }
-  .gcard:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
-  .gcard.is-done { cursor: default; opacity: .6; }
-  .gcard-inner {
-    position: absolute; inset: 0;
-    transform-style: preserve-3d;
-    transition: transform .42s cubic-bezier(.4, .15, .2, 1);
+  .hole {
+    appearance: none; -webkit-appearance: none;
+    position: relative; aspect-ratio: 1; padding: 0;
+    background: var(--sunken); border: 1px solid var(--hairline);
+    border-radius: 16px; cursor: pointer; overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
-  .gcard.is-up .gcard-inner, .gcard.is-done .gcard-inner { transform: rotateY(180deg); }
-  .gcard-face {
-    position: absolute; inset: 0;
-    -webkit-backface-visibility: hidden; backface-visibility: hidden;
-    display: grid; place-items: center; gap: .32rem;
-    border: 1px solid var(--hairline); border-radius: 13px;
+  .hole:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .hole .bug {
+    position: absolute; inset: 24%; color: var(--text);
+    opacity: 0; transform: scale(.35);
+    transition: opacity .12s ease, transform .13s cubic-bezier(.34, 1.56, .64, 1);
+    pointer-events: none;
   }
-  .gcard-back { background: var(--sunken); }
-  .gcard-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); opacity: .5; }
-  .gcard-front {
-    transform: rotateY(180deg); background: var(--frame); padding: .35rem;
-    align-content: center;
+  .hole .bug svg { width: 100%; height: 100%; display: block; }
+  .hole.up .bug { opacity: 1; transform: scale(1); }
+  .hole.up .bug.wiggle { animation: bugWiggle .5s ease-in-out infinite; }
+  .hole.hit { background: color-mix(in srgb, var(--focus) 15%, var(--sunken)); }
+  .hole.hit .bug { opacity: 0; transform: scale(1.7) rotate(14deg); }
+  @keyframes bugWiggle { 0%, 100% { rotate: -7deg; } 50% { rotate: 7deg; } }
+  .game-msg {
+    margin: 1.1rem 0 0; text-align: center; font-size: .95rem;
+    color: var(--text); min-height: 1.3em;
   }
-  .gcard-front .app-mark { width: clamp(26px, 8.5vw, 34px); border-radius: 27%; }
-  .gcard-nm {
-    font-size: .58rem; font-weight: 650; letter-spacing: -.01em;
-    color: var(--muted); text-align: center; line-height: 1.15;
-  }
-  .gcard.is-done .gcard-front { border-color: color-mix(in srgb, var(--focus) 45%, var(--hairline)); }
-  .game-win { margin: 1.15rem 0 0; text-align: center; font-size: .95rem; color: var(--text); }
-  .game-win b { font-variant-numeric: tabular-nums; }
-  .game-win a { border-bottom: 1px solid var(--text); padding-bottom: 1px; }
-  .game-win a:hover { opacity: .7; }
-  .reduce-motion .gcard-inner { transition: none; }
-  @media (max-width: 420px) {
-    .game-board { gap: .4rem; }
-    .gcard-nm { font-size: .54rem; }
-  }
+  .game-msg b { font-variant-numeric: tabular-nums; }
+  .game-msg a { border-bottom: 1px solid var(--text); padding-bottom: 1px; }
+  .game-msg a:hover { opacity: .7; }
+  .reduce-motion .hole .bug { transition: none; }
+  .reduce-motion .hole.up .bug.wiggle { animation: none; }
 
   /* ---------- Comparison ---------- */
   .compare { border: 1px solid var(--hairline); border-radius: 18px; overflow: hidden; }
@@ -1117,18 +1110,19 @@
   <section class="band" id="play">
     <div class="band-head reveal">
       <span class="eyebrow-pill">Coffee break</span>
-      <h2 class="serif">Match the suite</h2>
-      <p>Flip two cards at a time and clear all six pairs. Every icon is a Business OS app we're building.</p>
+      <h2 class="serif">Squash the bug</h2>
+      <p>One shows up at a time &mdash; tap it before it's gone. Thirty seconds on the clock.</p>
     </div>
 
     <div class="game reveal" data-game>
       <div class="game-bar">
-        <span class="game-stat">Moves <b data-moves>0</b></span>
-        <span class="game-stat">Pairs <b data-pairs>0</b>/6</span>
-        <button class="game-reset" type="button" data-reset>New game</button>
+        <span class="game-stat">Time <b data-time>30</b>s</span>
+        <span class="game-stat">Squashed <b data-score>0</b></span>
+        <span class="game-stat">Best <b data-best>0</b></span>
+        <button class="game-btn" type="button" data-start>Start</button>
       </div>
-      <div class="game-board" data-board aria-label="Memory match board"></div>
-      <p class="game-win" data-win hidden></p>
+      <div class="game-board" data-board aria-label="Bug board"></div>
+      <p class="game-msg" data-msg>Ready when you are.</p>
     </div>
   </section>
 
@@ -1632,87 +1626,118 @@
       steps.forEach(function (st) { st.classList.add("active"); });
     }
 
-    /* Business OS memory match game */
+    /* Squash-the-bug mini-game */
     var gameWrap = document.querySelector("[data-game]");
     if (gameWrap) {
-      var APPS = [
-        { nm: "CRM", ic: "#007AFF", g: '<polygon class="fg" points="24,26 62,26 76,40 56,54 56,74 44,74 44,54 24,40"/>' },
-        { nm: "Invoice", ic: "#34C759", g: '<polygon class="fg" points="28,20 62,20 76,34 76,80 28,80"/>' },
-        { nm: "Projects", ic: "#FF9500", g: '<rect class="fg" x="22" y="24" width="42" height="14"/><polygon class="fg" points="32,43 78,43 78,50 71,57 32,57"/><rect class="fg" x="26" y="62" width="34" height="14"/>' },
-        { nm: "Helpdesk", ic: "#5AC8FA", g: '<polygon class="fg" points="24,22 78,22 78,60 44,60 28,76 31,60 24,60"/>' },
-        { nm: "Books", ic: "#5856D6", g: '<path class="fg" d="M48 32C40 27 30 25 22 27C21 27 20 28 20 29V68C20 69 21 70 22 70C30 68 40 70 48 75Z"/><path class="fg" d="M52 32C60 27 70 25 78 27C79 27 80 28 80 29V68C80 69 79 70 78 70C70 68 60 70 52 75Z"/>' },
-        { nm: "Analytics", ic: "#32ADE6", g: '<rect class="fg" x="24" y="52" width="14" height="26"/><rect class="fg" x="43" y="40" width="14" height="38"/><polygon class="fg" points="62,32 68,26 76,26 76,78 62,78"/>' },
-        { nm: "Automation", ic: "#00C7BE", g: '<polygon class="fg" points="56,20 32,54 47,54 43,80 70,44 54,44 60,20"/>' },
-        { nm: "Identity", ic: "#FF3B30", g: '<polygon class="fg" points="28,24 72,24 72,50 50,78 28,50"/>' }
-      ];
-      var NEED = 6;
+      var BUG =
+        '<span class="bug' + (RM ? '' : ' wiggle') + '">' +
+          '<svg viewBox="0 0 100 100" aria-hidden="true">' +
+            '<g stroke="currentColor" stroke-width="5" stroke-linecap="round">' +
+              '<line x1="27" y1="41" x2="10" y2="30"/><line x1="25" y1="55" x2="6" y2="55"/><line x1="27" y1="69" x2="10" y2="80"/>' +
+              '<line x1="73" y1="41" x2="90" y2="30"/><line x1="75" y1="55" x2="94" y2="55"/><line x1="73" y1="69" x2="90" y2="80"/>' +
+              '<line x1="43" y1="17" x2="34" y2="6"/><line x1="57" y1="17" x2="66" y2="6"/>' +
+            '</g>' +
+            '<circle cx="50" cy="24" r="12" fill="currentColor"/>' +
+            '<ellipse cx="50" cy="57" rx="24" ry="28" fill="currentColor"/>' +
+          '</svg>' +
+        '</span>';
       var board = gameWrap.querySelector("[data-board]");
-      var movesEl = gameWrap.querySelector("[data-moves]");
-      var pairsEl = gameWrap.querySelector("[data-pairs]");
-      var winEl = gameWrap.querySelector("[data-win]");
-      var resetBtn = gameWrap.querySelector("[data-reset]");
-      var lock = false, first = null, moves = 0, pairs = 0;
+      var timeEl = gameWrap.querySelector("[data-time]");
+      var scoreEl = gameWrap.querySelector("[data-score]");
+      var bestEl = gameWrap.querySelector("[data-best]");
+      var msgEl = gameWrap.querySelector("[data-msg]");
+      var startBtn = gameWrap.querySelector("[data-start]");
+      var BEST_KEY = "dotnapps-site-bughunt-best";
+      var holes = [];
+      var running = false, score = 0, timeLeft = 30, active = -1;
+      var tickT = null, spawnT = null, hideT = null;
 
-      var shuffle = function (a) {
-        for (var i = a.length - 1; i > 0; i--) {
-          var j = Math.floor(Math.random() * (i + 1)), t = a[i];
-          a[i] = a[j]; a[j] = t;
+      var best = 0;
+      try { best = parseInt(localStorage.getItem(BEST_KEY), 10) || 0; } catch (e) {}
+      bestEl.textContent = String(best);
+
+      for (var i = 0; i < 9; i++) {
+        var h = document.createElement("button");
+        h.className = "hole";
+        h.type = "button";
+        h.setAttribute("aria-label", "Empty");
+        h.innerHTML = BUG;
+        (function (btn) { btn.addEventListener("click", function () { whack(btn); }); })(h);
+        holes.push(h);
+        board.appendChild(h);
+      }
+
+      function elapsed() { return 30 - timeLeft; }
+
+      function hideActive() {
+        if (active > -1) {
+          holes[active].classList.remove("up");
+          holes[active].setAttribute("aria-label", "Empty");
+          active = -1;
         }
-        return a;
-      };
+      }
 
-      var build = function () {
-        board.innerHTML = "";
-        winEl.hidden = true; winEl.textContent = "";
-        lock = false; first = null; moves = 0; pairs = 0;
-        movesEl.textContent = "0"; pairsEl.textContent = "0";
-        var picks = shuffle(APPS.slice()).slice(0, NEED);
-        shuffle(picks.concat(picks)).forEach(function (app) {
-          var btn = document.createElement("button");
-          btn.className = "gcard";
-          btn.type = "button";
-          btn.dataset.key = app.nm;
-          btn.setAttribute("aria-label", "Hidden card");
-          btn.innerHTML =
-            '<span class="gcard-inner">' +
-              '<span class="gcard-face gcard-back" aria-hidden="true"><span class="gcard-dot"></span></span>' +
-              '<span class="gcard-face gcard-front" style="--ic:' + app.ic + '">' +
-                '<span class="app-mark"><svg viewBox="0 0 100 100">' + app.g + '</svg></span>' +
-                '<span class="gcard-nm">' + app.nm + '</span>' +
-              '</span>' +
-            '</span>';
-          btn.addEventListener("click", function () { flip(btn); });
-          board.appendChild(btn);
+      function spawn() {
+        hideActive();
+        if (!running) return;
+        var idx = Math.floor(Math.random() * 9);
+        active = idx;
+        holes[idx].classList.add("up");
+        holes[idx].setAttribute("aria-label", "Bug — squash it");
+        var life = Math.max(520, 980 - elapsed() * 16);
+        var gap = Math.max(230, 520 - elapsed() * 10);
+        hideT = setTimeout(hideActive, life);
+        spawnT = setTimeout(spawn, life + gap);
+      }
+
+      function whack(btn) {
+        if (!running || !btn.classList.contains("up")) return;
+        btn.classList.remove("up");
+        btn.classList.add("hit");
+        btn.setAttribute("aria-label", "Squashed");
+        active = -1;
+        setTimeout(function () { btn.classList.remove("hit"); }, 200);
+        score++;
+        scoreEl.textContent = String(score);
+      }
+
+      function tick() {
+        timeLeft--;
+        timeEl.textContent = String(timeLeft);
+        if (timeLeft <= 0) { stop(); return; }
+        tickT = setTimeout(tick, 1000);
+      }
+
+      function stop() {
+        running = false;
+        clearTimeout(tickT); clearTimeout(spawnT); clearTimeout(hideT);
+        hideActive();
+        startBtn.disabled = false;
+        startBtn.textContent = "Play again";
+        var line = "Time. You squashed <b>" + score + "</b>.";
+        if (score > best) {
+          best = score;
+          try { localStorage.setItem(BEST_KEY, String(best)); } catch (e) {}
+          bestEl.textContent = String(best);
+          line += " New best &mdash; <a href=\"#contact\">now ship yours</a>.";
+        }
+        msgEl.innerHTML = line;
+      }
+
+      function start() {
+        running = true; score = 0; timeLeft = 30; active = -1;
+        scoreEl.textContent = "0"; timeEl.textContent = "30";
+        msgEl.textContent = "Go.";
+        startBtn.disabled = true; startBtn.textContent = "Playing…";
+        holes.forEach(function (h) {
+          h.classList.remove("up", "hit");
+          h.setAttribute("aria-label", "Empty");
         });
-      };
+        tickT = setTimeout(tick, 1000);
+        spawnT = setTimeout(spawn, 400);
+      }
 
-      var flip = function (btn) {
-        if (lock || btn.classList.contains("is-up") || btn.classList.contains("is-done")) return;
-        btn.classList.add("is-up");
-        btn.setAttribute("aria-label", btn.dataset.key + ", revealed");
-        if (!first) { first = btn; return; }
-        moves++; movesEl.textContent = String(moves);
-        var a = first; first = null;
-        if (a.dataset.key === btn.dataset.key) {
-          a.classList.add("is-done"); btn.classList.add("is-done");
-          pairs++; pairsEl.textContent = String(pairs);
-          if (pairs === NEED) {
-            winEl.hidden = false;
-            winEl.innerHTML = "Cleared in <b>" + moves + "</b> moves. That's Business OS &mdash; <a href=\"#products\">one account, one bill</a>.";
-          }
-        } else {
-          lock = true;
-          setTimeout(function () {
-            a.classList.remove("is-up"); btn.classList.remove("is-up");
-            a.setAttribute("aria-label", "Hidden card");
-            btn.setAttribute("aria-label", "Hidden card");
-            lock = false;
-          }, 720);
-        }
-      };
-
-      resetBtn.addEventListener("click", build);
-      build();
+      startBtn.addEventListener("click", function () { if (!running) start(); });
     }
 
     if (RM) return; /* skip pointer-motion niceties */
