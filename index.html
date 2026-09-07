@@ -706,6 +706,38 @@
   .game-msg a { border-bottom: 1px solid var(--text); padding-bottom: 1px; }
   .game-msg a:hover { opacity: .7; }
 
+  /* on-screen jump control (touch / narrow) */
+  .game-pad { display: none; }
+  @media (pointer: coarse), (max-width: 720px) {
+    .game-pad { display: flex; justify-content: center; margin-top: .95rem; }
+  }
+  .game-pad-base {
+    width: 94px; height: 94px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--sunken); border: 1px solid var(--hairline);
+    box-shadow: inset 0 2px 7px color-mix(in srgb, var(--text) 13%, transparent);
+    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  }
+  .game-pad-btn {
+    appearance: none; -webkit-appearance: none;
+    width: 66px; height: 66px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--frame); border: 1px solid var(--border); color: var(--text);
+    cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+    box-shadow:
+      0 3px 0 color-mix(in srgb, var(--text) 17%, transparent),
+      0 5px 11px color-mix(in srgb, var(--text) 12%, transparent);
+    transition: transform .06s ease, box-shadow .06s ease;
+  }
+  .game-pad-btn svg { width: 26px; height: 26px; display: block; }
+  .game-pad-btn.is-pressed, .game-pad-btn:active {
+    transform: translateY(3px);
+    box-shadow:
+      0 0 0 color-mix(in srgb, var(--text) 17%, transparent),
+      0 2px 5px color-mix(in srgb, var(--text) 10%, transparent);
+  }
+  .game-pad-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
   /* ---------- Comparison ---------- */
   .compare { border: 1px solid var(--hairline); border-radius: 18px; overflow: hidden; }
   .compare-wrap { overflow-x: auto; }
@@ -1112,6 +1144,13 @@
       <div class="game-stage" data-stage tabindex="0" role="button" aria-label="Endless runner — press Space or tap to jump">
         <canvas data-canvas width="680" height="180"></canvas>
         <p class="game-hint" data-hint>Space or tap to jump</p>
+      </div>
+      <div class="game-pad">
+        <span class="game-pad-base">
+          <button class="game-pad-btn" type="button" data-jump aria-label="Jump">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l8 9h-4.5v7h-7v-7H4z" fill="currentColor"/></svg>
+          </button>
+        </span>
       </div>
       <p class="game-msg" data-msg aria-live="polite">Jump the bugs. How far can you ship it?</p>
     </div>
@@ -1628,6 +1667,8 @@
       var msgEl = gameWrap.querySelector("[data-msg]");
       var hintEl = gameWrap.querySelector("[data-hint]");
       var startBtn = gameWrap.querySelector("[data-start]");
+      var padBtn = gameWrap.querySelector("[data-jump]");
+      var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
       var BEST_KEY = "dotnapps-site-runner-best";
       var W = 680, H = 180, GROUND = 150;
 
@@ -1837,7 +1878,7 @@
         draw();
         startBtn.disabled = false;
         startBtn.textContent = "Run again";
-        hintEl.textContent = "Space or tap to run again";
+        hintEl.textContent = coarse ? "Tap the button to run again" : "Space or tap to run again";
         hintEl.hidden = false;
         var line = "You shipped <b>" + shown + "</b> before the bugs caught up.";
         if (shown > best) {
@@ -1863,6 +1904,22 @@
         try { stage.focus({ preventScroll: true }); } catch (err) { stage.focus(); }
       });
       startBtn.addEventListener("click", function () { if (stateG !== "run") start(); });
+
+      if (padBtn) {
+        var padPress = function (e) {
+          if (e && e.cancelable) e.preventDefault();
+          padBtn.classList.add("is-pressed");
+          onInput();
+        };
+        var padRelease = function () { padBtn.classList.remove("is-pressed"); };
+        padBtn.addEventListener("pointerdown", padPress);
+        padBtn.addEventListener("pointerup", padRelease);
+        padBtn.addEventListener("pointercancel", padRelease);
+        padBtn.addEventListener("pointerleave", padRelease);
+        padBtn.addEventListener("click", function (e) { e.preventDefault(); });
+      }
+
+      if (coarse) hintEl.textContent = "Tap the button to jump";
 
       reset();
       draw();
