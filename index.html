@@ -820,7 +820,7 @@
     footer .cols { margin-left: 0; gap: 1.75rem 2rem; }
   }
 
-  /* Comparison table -> stacked rows */
+  /* Comparison table -> stacked comparison cards */
   @media (max-width: 620px) {
     .compare { border: 0; border-radius: 0; overflow: visible; background: transparent; }
     .compare-wrap { overflow: visible; }
@@ -830,30 +830,42 @@
 
     .compare tbody tr {
       border: 1px solid var(--hairline); border-radius: 14px;
-      background: var(--frame); padding: .9rem 1rem 1rem; margin-bottom: .6rem;
+      background: var(--frame); padding: .95rem 1rem 1.05rem; margin-bottom: .7rem;
     }
     .compare tbody tr:last-child { margin-bottom: 0; }
+
+    /* dimension name = card eyebrow */
     .compare tbody th {
       border: 0; border-bottom: 1px solid var(--hairline);
-      padding: 0 0 .6rem; margin-bottom: .5rem;
-      font-size: .95rem; font-weight: 650; color: var(--text);
+      padding: 0 0 .6rem; margin-bottom: .55rem;
+      font-size: .69rem; font-weight: 700; color: var(--faint);
+      letter-spacing: .09em; text-transform: uppercase;
     }
+
+    /* each option = a rail-marked row so the three read side-by-side */
     .compare tbody td {
-      border: 0; padding: .42rem 0;
-      display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
-      font-size: .88rem; text-align: right; color: var(--muted);
+      border: 0; border-left: 2px solid var(--hairline);
+      padding: .36rem .7rem; margin: 0;
+      display: flex; align-items: baseline; gap: .7rem;
+      font-size: .88rem; text-align: left; color: var(--muted);
     }
     .compare tbody td::before {
-      content: attr(data-label); flex: none;
-      color: var(--faint); font-weight: 600; font-size: .68rem;
-      letter-spacing: .06em; text-transform: uppercase; text-align: left;
+      content: attr(data-label); flex: none; width: 5.5rem;
+      align-self: center;
+      color: var(--faint); font-weight: 600; font-size: .69rem;
+      letter-spacing: .04em; text-transform: uppercase; line-height: 1.25;
     }
     .compare tbody td.col-us {
-      margin: .35rem -.55rem 0; padding: .5rem .6rem; border-radius: 9px;
+      margin-top: .32rem;
+      border-left: 2px solid var(--focus); border-radius: 0 9px 9px 0;
+      padding-top: .5rem; padding-bottom: .5rem;
       background: color-mix(in srgb, var(--focus) 8%, transparent);
       color: var(--text); font-weight: 650;
     }
-    .compare tbody td.col-us::before { color: var(--focus); }
+    .compare tbody td.col-us::before {
+      content: "\2713  Dotnapps"; text-transform: none;
+      font-size: .72rem; font-weight: 700; color: var(--focus); letter-spacing: .01em;
+    }
   }
 
   /* Portrait phone */
