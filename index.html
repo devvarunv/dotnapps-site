@@ -221,13 +221,19 @@
 
   .nav-toggle {
     display: none;
-    align-items: center; justify-content: center; gap: 3.5px;
+    align-items: center; justify-content: center; gap: 4px;
     width: 42px; height: 36px; flex: none;
     max-width: 42px; opacity: 1;
     border: 0; border-radius: 999px; background: transparent; cursor: pointer;
     transition: max-width .3s ease, opacity .18s ease, margin .3s ease;
   }
-  .nav-toggle i { width: 4px; height: 4px; border-radius: 50%; background: var(--text); }
+  .nav-toggle i {
+    width: 5px; height: 5px; border-radius: 50%;
+    background:
+      radial-gradient(circle at 32% 28%, color-mix(in srgb, #fff 45%, transparent), transparent 60%),
+      linear-gradient(145deg, var(--text) 0%, color-mix(in srgb, var(--text) 42%, var(--focus)) 100%);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--text) 22%, transparent);
+  }
   .js .nav-toggle i { animation: navDots 1.4s ease-in-out infinite both; }
   .js .nav-toggle i:nth-child(1) { animation-delay: -.32s; }
   .js .nav-toggle i:nth-child(2) { animation-delay: -.16s; }
@@ -853,8 +859,8 @@
     }
     .nav .brand { font-size: 1.1rem; transition: opacity .2s ease; }
     .nav .brand svg { width: 23px; height: 23px; }
-    .nav-toggle { display: inline-flex; margin-left: 0; width: 40px; height: 34px; }
-    .nav-toggle i { width: 5px; height: 5px; }
+    .nav-toggle { display: inline-flex; margin-left: 0; width: 40px; height: 34px; gap: 4.5px; }
+    .nav-toggle i { width: 6px; height: 6px; }
 
     /* menu open: the pill steps aside and the card takes over */
     .nav.open {
